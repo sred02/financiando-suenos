@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Empresas Donantes – Financiando Sueños | Unbound</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Merriweather:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy:     #1B3A5C;
+      --navy-dk:  #122843;
+      --teal:     #00A99D;
+      --teal-dk:  #007f75;
+      --teal-lt:  #E6F7F6;
+      --gold:     #E8A020;
+      --gold-lt:  #FEF3E2;
+      --green:    #27AE60;
+      --green-lt: #EAFAF1;
+      --red:      #C0392B;
+      --red-lt:   #FDEDEC;
+      --orange:   #E67E22;
+      --orange-lt:#FEF5E7;
+      --purple:   #8E44AD;
+      --purple-lt:#F5EEF8;
+      --bg:       #F4F6F9;
+      --white:    #FFFFFF;
+      --gray-1:   #F0F2F5;
+      --gray-2:   #D8DCE3;
+      --gray-3:   #8C97A8;
+      --gray-4:   #4A5568;
+      --text:     #1C2B3A;
+      --radius:   12px;
+      --radius-sm:8px;
+      --shadow:   0 2px 12px rgba(27,58,92,.09);
+      --shadow-h: 0 8px 28px rgba(27,58,92,.16);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Nunito', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+    button { cursor: pointer; font-family: inherit; }
+    input, select, textarea { font-family: inherit; }
+    a { text-decoration: none; }
+
+    /* ── TOPBAR ──────────────────────────────────────── */
+    .topbar {
+      height: 5px;
+      background: linear-gradient(90deg,
+        #E84040 0%,#E84040 16.6%,#E8A020 16.6%,#E8A020 33.3%,
+        #F5D020 33.3%,#F5D020 50%,#2BAD60 50%,#2BAD60 66.6%,
+        #00A99D 66.6%,#00A99D 83.3%,#1B3A5C 83.3%,#1B3A5C 100%);
+    }
+
+    /* ── NAVBAR ──────────────────────────────────────── */
+    .navbar {
+      background: var(--white); border-bottom: 1px solid var(--gray-2);
+      padding: 0 48px; display: flex; align-items: center; gap: 40px;
+      height: 68px; position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 1px 8px rgba(0,0,0,.06);
+    }
+    .logo { display: flex; align-items: center; gap: 10px; }
+    .logo-icon { width: 38px; height: 38px; background: var(--teal); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+    .logo-text { font-family: 'Merriweather', serif; font-size: 13px; font-weight: 700; color: var(--navy); }
+    .logo-sub  { font-size: 10px; color: var(--teal); font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; }
+    .nav-links { display: flex; gap: 4px; margin-left: 8px; }
+    .nav-links a { font-size: 14px; font-weight: 700; color: var(--navy); padding: 6px 14px; border-radius: 6px; transition: background .2s, color .2s; }
+    .nav-links a:hover { background: var(--gray-1); color: var(--teal); }
+    .nav-links a.active { color: var(--teal); }
+    .nav-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+    .nav-icon-btn { width: 36px; height: 36px; border-radius: 8px; border: 1.5px solid var(--gray-2); background: transparent; display: flex; align-items: center; justify-content: center; font-size: 16px; color: var(--navy); transition: border-color .2s; }
+    .nav-icon-btn:hover { border-color: var(--teal); background: var(--gray-1); }
+    .user-chip { display: flex; align-items: center; gap: 8px; background: var(--gray-1); border-radius: 20px; padding: 4px 14px 4px 4px; font-size: 13px; font-weight: 700; color: var(--navy); }
+    .user-avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--teal); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; }
+
+    /* ── PAGE HEADER ─────────────────────────────────── */
+    .page-header {
+      background: var(--white); border-bottom: 1px solid var(--gray-2);
+      padding: 28px 48px 0;
+    }
+    .page-header-top { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 0; }
+    .page-title-block h1 { font-family: 'Merriweather', serif; font-size: 24px; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+    .page-title-block p  { font-size: 14px; color: var(--gray-3); }
+    .btn-nueva {
+      display: flex; align-items: center; gap: 8px;
+      background: var(--teal); color: #fff; border: none;
+      border-radius: var(--radius-sm); padding: 11px 22px;
+      font-size: 14px; font-weight: 800;
+      transition: background .2s, transform .15s;
+      box-shadow: 0 3px 12px rgba(0,169,157,.3);
+    }
+    .btn-nueva:hover { background: var(--teal-dk); transform: translateY(-1px); }
+
+    /* Tabs */
+    .page-tabs { display: flex; gap: 0; margin-top: 20px; }
+    .tab-btn { padding: 12px 24px; font-size: 14px; font-weight: 700; color: var(--gray-3); border: none; background: none; border-bottom: 3px solid transparent; transition: color .2s, border-color .2s; }
+    .tab-btn:hover { color: var(--navy); }
+    .tab-btn.active { color: var(--teal); border-bottom-color: var(--teal); }
+
+    /* ── KPI STRIP ───────────────────────────────────── */
+    .kpi-strip { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; padding: 24px 48px; }
+    .kpi-card {
+      background: var(--white); border: 1px solid var(--gray-2);
+      border-radius: var(--radius); padding: 20px 22px;
+      box-shadow: var(--shadow); overflow: hidden; position: relative;
+      animation: fadeUp .4s ease both;
+    }
+    .kpi-card:nth-child(1){animation-delay:.05s}
+    .kpi-card:nth-child(2){animation-delay:.10s}
+    .kpi-card:nth-child(3){animation-delay:.15s}
+    .kpi-card:nth-child(4){animation-delay:.20s}
+    @keyframes fadeUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+    .kpi-accent { position: absolute; top: 0; left: 0; right: 0; height: 4px; }
+    .kpi-icon  { font-size: 26px; margin-bottom: 8px; }
+    .kpi-label { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .8px; color: var(--gray-3); margin-bottom: 4px; }
+    .kpi-value { font-family: 'Merriweather', serif; font-size: 30px; font-weight: 700; color: var(--navy); line-height: 1; margin-bottom: 6px; }
+    .kpi-delta { display: inline-flex; align-items: center; gap: 4px; border-radius: 20px; padding: 3px 10px; font-size: 11px; font-weight: 800; }
+    .delta-up   { background: var(--green-lt); color: var(--green); }
+    .delta-info { background: var(--teal-lt);  color: var(--teal-dk); }
+    .delta-warn { background: var(--orange-lt);color: var(--orange); }
+
+    /* ── MAIN LAYOUT ─────────────────────────────────── */
+    .main-area { padding: 0 48px 48px; display: flex; gap: 24px; align-items: flex-start; }
+
+    /* ── TABLE PANEL ─────────────────────────────────── */
+    .table-panel { flex: 1; min-width: 0; }
+
+    .toolbar { display: flex; gap: 12px; align-items: center; margin-bottom: 16px; flex-wrap: wrap; }
+    .search-wrap { position: relative; flex: 1; min-width: 220px; }
+    .search-input { width: 100%; border: 1.5px solid var(--gray-2); border-radius: var(--radius-sm); padding: 10px 14px 10px 40px; font-size: 14px; color: var(--text); background: var(--white); transition: border-color .2s; }
+    .search-input:focus { outline: none; border-color: var(--teal); }
+    .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 15px; color: var(--gray-3); }
+    .filter-sel { border: 1.5px solid var(--gray-2); border-radius: var(--radius-sm); padding: 10px 12px; font-size: 13px; color: var(--text); background: var(--white); transition: border-color .2s; }
+    .filter-sel:focus { outline: none; border-color: var(--teal); }
+    .btn-export { display: flex; align-items: center; gap: 6px; border: 1.5px solid var(--gray-2); border-radius: var(--radius-sm); padding: 10px 16px; font-size: 13px; font-weight: 700; color: var(--navy); background: var(--white); transition: border-color .2s, background .2s; }
+    .btn-export:hover { border-color: var(--teal); background: var(--teal-lt); color: var(--teal-dk); }
+
+    /* Cards grid */
+    .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); gap: 20px; }
+
+    .empresa-card {
+      background: var(--white); border: 1px solid var(--gray-2);
+      border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow);
+      transition: transform .25s, box-shadow .25s;
+      animation: fadeUp .4s ease both;
+      cursor: pointer;
+    }
+    .empresa-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-h); }
+    .empresa-card:nth-child(1){animation-delay:.05s}
+    .empresa-card:nth-child(2){animation-delay:.10s}
+    .empresa-card:nth-child(3){animation-delay:.15s}
+    .empresa-card:nth-child(4){animation-delay:.20s}
+    .empresa-card:nth-child(5){animation-delay:.25s}
+
+    .card-header {
+      background: var(--navy); padding: 18px 20px;
+      display: flex; align-items: center; gap: 14px;
+    }
+    .empresa-avatar {
+      width: 48px; height: 48px; border-radius: 10px;
+      background: var(--teal); display: flex; align-items: center; justify-content: center;
+      font-size: 16px; font-weight: 900; color: #fff; flex-shrink: 0;
+      letter-spacing: -.5px;
+    }
+    .card-header-info { flex: 1; min-width: 0; }
+    .card-razon { font-size: 14px; font-weight: 800; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .card-nit   { font-size: 11px; color: rgba(255,255,255,.5); margin-top: 2px; }
+
+    .card-status { display: flex; align-items: center; gap: 6px; }
+    .status-dot  { width: 8px; height: 8px; border-radius: 50%; }
+    .status-dot.activa   { background: var(--teal); box-shadow: 0 0 0 3px rgba(0,169,157,.25); }
+    .status-dot.inactiva { background: var(--gray-3); }
+
+    .card-body { padding: 16px 20px; }
+    .card-info-row { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--gray-4); margin-bottom: 8px; }
+    .card-info-row .icon { font-size: 14px; flex-shrink: 0; }
+    .card-info-row b { color: var(--text); font-weight: 700; }
+
+    .card-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 14px 0; }
+    .stat-box { background: var(--gray-1); border-radius: var(--radius-sm); padding: 10px 12px; text-align: center; }
+    .stat-val { font-family: 'Merriweather', serif; font-size: 18px; font-weight: 700; color: var(--navy); }
+    .stat-lbl { font-size: 10px; color: var(--gray-3); font-weight: 700; text-transform: uppercase; letter-spacing: .5px; margin-top: 2px; }
+
+    /* Category tags */
+    .card-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 14px; }
+    .cat-tag { background: var(--teal-lt); border: 1px solid rgba(0,169,157,.3); border-radius: 20px; padding: 3px 10px; font-size: 11px; font-weight: 700; color: var(--teal-dk); }
+
+    .card-footer { padding: 12px 20px; border-top: 1px solid var(--gray-1); display: flex; gap: 8px; }
+    .btn-card { flex: 1; padding: 8px; border-radius: var(--radius-sm); font-size: 12px; font-weight: 800; transition: all .2s; text-align: center; }
+    .btn-card.primary { background: var(--navy); color: #fff; border: none; }
+    .btn-card.primary:hover { background: var(--navy-dk, #122843); }
+    .btn-card.outline { background: var(--white); color: var(--navy); border: 1.5px solid var(--gray-2); }
+    .btn-card.outline:hover { border-color: var(--teal); color: var(--teal-dk); background: var(--teal-lt); }
+    .btn-card.danger { background: var(--white); color: var(--red); border: 1.5px solid var(--gray-2); }
+    .btn-card.danger:hover { border-color: var(--red); background: var(--red-lt); }
+
+    /* Empty state */
+    .empty-state { text-align: center; padding: 64px 32px; color: var(--gray-3); grid-column: 1/-1; }
+    .empty-state .icon { font-size: 48px; margin-bottom: 12px; }
+    .empty-state h3 { font-size: 18px; color: var(--navy); margin-bottom: 6px; }
+
+    /* ── SIDE FORM PANEL ─────────────────────────────── */
+    .form-panel {
+      width: 380px; flex-shrink: 0;
+      background: var(--white); border: 1px solid var(--gray-2);
+      border-radius: var(--radius); box-shadow: var(--shadow);
+      position: sticky; top: 88px;
+      animation: slideIn .35s ease both; display: none;
+    }
+    @keyframes slideIn { from{opacity:0;transform:translateX(20px)} to{opacity:1;transform:translateX(0)} }
+
+    .form-header { background: var(--navy); color: #fff; padding: 20px 24px; border-radius: var(--radius) var(--radius) 0 0; display: flex; justify-content: space-between; align-items: flex-start; }
+    .form-header h2 { font-family: 'Merriweather', serif; font-size: 16px; font-weight: 700; }
+    .form-header p  { font-size: 12px; color: #AED6F1; margin-top: 2px; }
+    .form-close-btn { background: rgba(255,255,255,.12); border: none; color: #fff; width: 30px; height: 30px; border-radius: 6px; font-size: 16px; display: flex; align-items: center; justify-content: center; transition: background .2s; }
+    .form-close-btn:hover { background: rgba(255,255,255,.22); }
+
+    .form-body { padding: 20px 24px; max-height: calc(100vh - 200px); overflow-y: auto; }
+    .form-body::-webkit-scrollbar { width: 4px; }
+    .form-body::-webkit-scrollbar-thumb { background: var(--gray-2); border-radius: 2px; }
+
+    .form-section { font-size: 11px; font-weight: 800; color: var(--teal-dk); text-transform: uppercase; letter-spacing: .8px; margin: 18px 0 12px; padding-bottom: 6px; border-bottom: 2px solid var(--teal-lt); }
+    .form-section:first-child { margin-top: 0; }
+
+    .field { margin-bottom: 14px; }
+    .field label { display: block; font-size: 12px; font-weight: 800; color: var(--navy); margin-bottom: 5px; }
+    .field label .req { color: var(--red); }
+    .field input, .field select, .field textarea {
+      width: 100%; border: 1.5px solid var(--gray-2); border-radius: var(--radius-sm);
+      padding: 9px 12px; font-size: 13px; color: var(--text); background: var(--white);
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: var(--teal); box-shadow: 0 0 0 3px rgba(0,169,157,.12); }
+    .field textarea { height: 68px; resize: none; }
+    .field .hint { font-size: 11px; color: var(--gray-3); margin-top: 4px; }
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .field .err { font-size: 11px; color: var(--red); font-weight: 700; margin-top: 4px; display: none; }
+    .field .err.show { display: block; }
+    .field input.invalid, .field select.invalid { border-color: var(--red); }
+
+    .pwd-wrap { position: relative; }
+    .pwd-wrap input { padding-right: 40px; }
+    .pwd-toggle { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; font-size: 15px; color: var(--gray-3); transition: color .2s; }
+    .pwd-toggle:hover { color: var(--navy); }
+
+    .form-footer { padding: 16px 24px; border-top: 1px solid var(--gray-1); display: flex; gap: 10px; }
+    .btn-cancel-f { flex: 1; background: var(--white); color: var(--gray-4); border: 1.5px solid var(--gray-2); border-radius: var(--radius-sm); padding: 10px; font-size: 13px; font-weight: 700; transition: border-color .2s; }
+    .btn-cancel-f:hover { border-color: var(--red); color: var(--red); }
+    .btn-save-f { flex: 2; background: var(--teal); color: #fff; border: none; border-radius: var(--radius-sm); padding: 10px; font-size: 13px; font-weight: 800; transition: background .2s, transform .15s; box-shadow: 0 3px 12px rgba(0,169,157,.3); }
+    .btn-save-f:hover { background: var(--teal-dk); transform: translateY(-1px); }
+
+    /* ── MODAL DETALLE ───────────────────────────────── */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(10,20,35,.55); z-index: 200; display: none; align-items: center; justify-content: center; backdrop-filter: blur(3px); }
+    .modal-overlay.open { display: flex; }
+    .modal { background: var(--white); border-radius: 16px; width: 100%; max-width: 680px; max-height: 90vh; overflow-y: auto; box-shadow: 0 24px 64px rgba(0,0,0,.25); animation: modalIn .3s ease; }
+    @keyframes modalIn { from{opacity:0;transform:translateY(20px) scale(.97)} to{opacity:1;transform:translateY(0) scale(1)} }
+    .modal-topbar { height: 5px; background: linear-gradient(90deg, var(--teal), var(--navy)); border-radius: 16px 16px 0 0; }
+    .modal-header { padding: 22px 28px; border-bottom: 1px solid var(--gray-1); display: flex; justify-content: space-between; align-items: flex-start; }
+    .modal-header h2 { font-family: 'Merriweather', serif; font-size: 20px; color: var(--navy); }
+    .modal-header p  { font-size: 13px; color: var(--gray-3); margin-top: 3px; }
+    .modal-close { background: var(--gray-1); border: none; color: var(--navy); width: 32px; height: 32px; border-radius: 8px; font-size: 18px; display: flex; align-items: center; justify-content: center; transition: background .2s; }
+    .modal-close:hover { background: var(--red-lt); color: var(--red); }
+    .modal-body { padding: 24px 28px; }
+    .modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px; }
+    .modal-field label { font-size: 10px; font-weight: 800; color: var(--gray-3); text-transform: uppercase; letter-spacing: .7px; display: block; margin-bottom: 3px; }
+    .modal-field p     { font-size: 14px; font-weight: 600; color: var(--text); }
+    .modal-section-title { font-size: 11px; font-weight: 800; color: var(--teal-dk); text-transform: uppercase; letter-spacing: .8px; margin-bottom: 12px; padding-bottom: 6px; border-bottom: 2px solid var(--teal-lt); }
+
+    /* Donaciones recientes en modal */
+    .don-list { display: flex; flex-direction: column; gap: 8px; }
+    .don-row { display: flex; justify-content: space-between; align-items: center; background: var(--gray-1); border-radius: var(--radius-sm); padding: 10px 14px; }
+    .don-row-left { font-size: 13px; }
+    .don-row-id   { font-weight: 800; color: var(--teal-dk); font-size: 11px; margin-bottom: 2px; }
+    .don-row-desc { color: var(--gray-4); }
+    .don-row-val  { font-weight: 800; color: var(--navy); font-size: 13px; }
+    .don-empty { font-size: 13px; color: var(--gray-3); text-align: center; padding: 16px; }
+
+    .modal-footer { padding: 16px 28px; border-top: 1px solid var(--gray-1); display: flex; gap: 10px; }
+    .btn-modal-edit { flex: 1; background: var(--teal); color: #fff; border: none; border-radius: var(--radius-sm); padding: 10px; font-size: 13px; font-weight: 800; transition: background .2s; }
+    .btn-modal-edit:hover { background: var(--teal-dk); }
+    .btn-modal-close { flex: 1; background: var(--white); color: var(--navy); border: 1.5px solid var(--gray-2); border-radius: var(--radius-sm); padding: 10px; font-size: 13px; font-weight: 700; transition: border-color .2s; }
+    .btn-modal-close:hover { border-color: var(--navy); }
+
+    /* ── TOAST ───────────────────────────────────────── */
+    .toast { position: fixed; bottom: 28px; right: 28px; background: var(--navy); color: #fff; padding: 12px 20px; border-radius: 10px; font-size: 14px; font-weight: 700; box-shadow: 0 8px 24px rgba(0,0,0,.2); transform: translateY(80px); opacity: 0; transition: all .3s ease; z-index: 300; display: flex; align-items: center; gap: 8px; }
+    .toast.show { transform: translateY(0); opacity: 1; }
+  </style>
+</head>
+<body>
+
+<div class="topbar"></div>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="logo">
+    <div class="logo-icon">🏠</div>
+    <div>
+      <div class="logo-text">Financiando Sueños</div>
+      <div class="logo-sub">Unbound Colombia</div>
+    </div>
+  </div>
+  <div class="nav-links">
+    <a href="index.html">Inicio</a>
+    <a href="adultos.html">Beneficiarios</a>
+    <a href="donaciones.html">Donaciones</a>
+    <a href="empresas.html" class="active" data-solo-admin>Empresas</a>
+    <a href="reportes.html" data-solo-admin>Reportes</a>
+    <a href="certificado.html">Certificados</a>
+  </div>
+  <div class="nav-right">
+    <button class="nav-icon-btn">🔍</button>
+    <button class="nav-icon-btn">🔔</button>
+    <div class="user-chip">
+      <div class="user-avatar">AU</div>
+      Admin Unbound
+    </div>
+  </div>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="page-header-top">
+    <div class="page-title-block">
+      <h1>Empresas Donantes</h1>
+      <p>Gestión de empresas vinculadas al programa Financiando Sueños</p>
+    </div>
+    <button class="btn-nueva" onclick="abrirFormulario()" data-solo-admin>
+      <span style="font-size:18px;line-height:1;">+</span> Nueva Empresa
+    </button>
+  </div>
+  <div class="page-tabs">
+    <button class="tab-btn active" onclick="cambiarTab(this,'todas')">
+      Todas <span id="badge-tab" style="background:var(--teal);color:#fff;border-radius:10px;padding:1px 8px;font-size:11px;margin-left:4px;">4</span>
+    </button>
+    <button class="tab-btn" onclick="cambiarTab(this,'activa')">Activas</button>
+    <button class="tab-btn" onclick="cambiarTab(this,'sinDonacion')">Sin donaciones</button>
+  </div>
+</div>
+
+<!-- KPI STRIP -->
+<div class="kpi-strip">
+  <div class="kpi-card">
+    <div class="kpi-accent" style="background:var(--teal);"></div>
+    <div class="kpi-icon">🏢</div>
+    <div class="kpi-label">Total empresas</div>
+    <div class="kpi-value">4</div>
+    <span class="kpi-delta delta-up">▲ +2 este mes</span>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-accent" style="background:var(--green);"></div>
+    <div class="kpi-icon">✅</div>
+    <div class="kpi-label">Empresas activas</div>
+    <div class="kpi-value">4</div>
+    <span class="kpi-delta delta-info">100% del total</span>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-accent" style="background:var(--gold);"></div>
+    <div class="kpi-icon">📦</div>
+    <div class="kpi-label">Total donaciones</div>
+    <div class="kpi-value">47</div>
+    <span class="kpi-delta delta-up">▲ +8 este mes</span>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-accent" style="background:var(--purple);"></div>
+    <div class="kpi-icon">💰</div>
+    <div class="kpi-label">Valor total donado</div>
+    <div class="kpi-value" style="font-size:22px;">$38.4M</div>
+    <span class="kpi-delta delta-info">COP acumulado</span>
+  </div>
+</div>
+
+<!-- MAIN AREA -->
+<div class="main-area">
+
+  <!-- TABLE / CARDS PANEL -->
+  <div class="table-panel">
+
+    <div class="toolbar">
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input class="search-input" type="text" placeholder="Buscar por nombre, NIT o representante…" id="searchInput" oninput="filtrar()"/>
+      </div>
+      <select class="filter-sel" id="filterSector" onchange="filtrar()">
+        <option value="">Todos los sectores</option>
+        <option>Construcción y materiales</option>
+        <option>Ferretería</option>
+        <option>Cerámica y acabados</option>
+        <option>Electrodomésticos</option>
+        <option>Comercio y servicios</option>
+      </select>
+      <button class="btn-export" onclick="showToast('📥','Exportando a Excel…')">📥 Exportar</button>
+    </div>
+
+    <div class="cards-grid" id="cardsGrid"></div>
+  </div>
+
+  <!-- FORM PANEL -->
+  <div class="form-panel" id="formPanel">
+    <div class="form-header">
+      <div>
+        <h2 id="formTitle">Nueva Empresa</h2>
+        <p id="formSubtitle">Complete los datos para registrar</p>
+      </div>
+      <button class="form-close-btn" onclick="cerrarFormulario()">✕</button>
+    </div>
+    <div class="form-body">
+
+      <div class="form-section">Información de la empresa</div>
+
+      <div class="field">
+        <label>Razón social <span class="req">*</span></label>
+        <input id="fRazon" placeholder="Ej: Materiales del Norte S.A.S." oninput="clearErr('fRazon')"/>
+        <div class="err" id="err-fRazon">Campo requerido</div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>NIT <span class="req">*</span></label>
+          <input id="fNit" placeholder="000.000.000-0" oninput="clearErr('fNit')"/>
+          <div class="err" id="err-fNit">NIT requerido</div>
+        </div>
+        <div class="field">
+          <label>Sector económico</label>
+          <select id="fSector">
+            <option value="">— Seleccionar —</option>
+            <option>Construcción y materiales</option>
+            <option>Ferretería</option>
+            <option>Cerámica y acabados</option>
+            <option>Electrodomésticos</option>
+            <option>Comercio y servicios</option>
+            <option>Otro</option>
+          </select>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Tamaño</label>
+          <select id="fTamano">
+            <option value="">— Seleccionar —</option>
+            <option>Microempresa (1–10)</option>
+            <option>Pequeña (11–50)</option>
+            <option>Mediana (51–200)</option>
+            <option>Grande (200+)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Teléfono</label>
+          <input id="fTelefono" placeholder="601 000 0000"/>
+        </div>
+      </div>
+      <div class="field">
+        <label>Dirección</label>
+        <input id="fDireccion" placeholder="Calle 00 #00-00, Ciudad"/>
+      </div>
+
+      <div class="form-section">Representante y contacto</div>
+
+      <div class="field-row">
+        <div class="field">
+          <label>Nombre del representante <span class="req">*</span></label>
+          <input id="fRep" placeholder="Nombre completo" oninput="clearErr('fRep')"/>
+          <div class="err" id="err-fRep">Campo requerido</div>
+        </div>
+        <div class="field">
+          <label>Cargo</label>
+          <input id="fCargo" placeholder="Ej: Gerente de RSE"/>
+        </div>
+      </div>
+      <div class="field">
+        <label>Correo corporativo <span class="req">*</span></label>
+        <input id="fCorreo" type="email" placeholder="contacto@empresa.com" oninput="clearErr('fCorreo')"/>
+        <div class="err" id="err-fCorreo">Correo válido requerido</div>
+        <div class="hint">Se usará para notificaciones y acceso al portal</div>
+      </div>
+
+      <div class="form-section" id="pwdSection">Acceso al portal</div>
+
+      <div class="field" id="pwdField">
+        <label>Contraseña <span class="req">*</span></label>
+        <div class="pwd-wrap">
+          <input id="fPwd" type="password" placeholder="Mínimo 8 caracteres" oninput="clearErr('fPwd')"/>
+          <button type="button" class="pwd-toggle" onclick="togglePwd()">👁️</button>
+        </div>
+        <div class="err" id="err-fPwd">Mínimo 8 caracteres</div>
+        <div class="hint">Mínimo 8 caracteres, una mayúscula y un número</div>
+      </div>
+
+    </div>
+    <div class="form-footer">
+      <button class="btn-cancel-f" onclick="cerrarFormulario()">Cancelar</button>
+      <button class="btn-save-f" id="btnSave" onclick="guardarEmpresa()">Registrar Empresa</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL DETALLE -->
+<div class="modal-overlay" id="modalOverlay" onclick="cerrarModal(event)">
+  <div class="modal">
+    <div class="modal-topbar"></div>
+    <div class="modal-header">
+      <div>
+        <h2 id="modalNombre">—</h2>
+        <p id="modalNit">—</p>
+      </div>
+      <button class="modal-close" onclick="cerrarModalBtn()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-section-title">Información de la empresa</div>
+      <div class="modal-grid" id="modalGrid"></div>
+      <div class="modal-section-title" style="margin-top:20px;">Donaciones realizadas</div>
+      <div id="modalDonaciones"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-modal-edit" onclick="editarDesdeModal()">✏️ Editar empresa</button>
+      <button class="btn-modal-close" onclick="cerrarModalBtn()">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span id="toastIcon"></span>
+  <span id="toastMsg"></span>
+</div>
+
+<script>
+// ── NAVBAR SEGÚN ROL ──────────────────────────────────────────────────────────
+function construirNavbar() {
+  const rol = Session.rol();
+  const links = document.querySelector(".nav-links");
+
+  if (rol === "empresa") {
+    links.innerHTML = `
+      <a href="index.html">Inicio</a>
+      <a href="adultos.html">Beneficiarios</a>
+      <a href="donaciones.html">Mis Donaciones</a>
+      <a href="certificado.html">Mis Certificados</a>
+    `;
+  } else {
+    links.innerHTML = `
+      <a href="index.html">Inicio</a>
+      <a href="adultos.html">Beneficiarios</a>
+      <a href="donaciones.html">Donaciones</a>
+      <a href="empresas.html">Empresas</a>
+      <a href="reportes.html">Reportes</a>
+      <a href="certificado.html">Certificados</a>
+    `;
+  }
+
+  // Marcar el link activo según la página actual
+  const pagina = window.location.pathname.split("/").pop() || "empresas.html";
+  links.querySelectorAll("a").forEach(a => {
+    const href = a.getAttribute("href");
+    if (href === pagina || (pagina === "" && href === "empresas.html")) {
+      a.classList.add("active");
+    } else {
+      a.classList.remove("active");
+    }
+  });
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+document.addEventListener("DOMContentLoaded", () => {
+  Session.requerir(); // redirige a login.html si no hay token
+
+  const rol    = Session.rol();     // "admin" o "empresa"
+  const nombre = Session.nombre();
+
+  // Actualizar el chip del navbar con nombre real y botón de salir
+  document.querySelector(".user-chip").innerHTML = `
+    <div class="user-avatar">${iniciales(nombre)}</div>
+    ${nombre}
+    <span style="margin-left:8px;font-size:11px;color:var(--teal);cursor:pointer"
+          onclick="Auth.logout()">Salir</span>
+  `;
+
+  // Ocultar secciones según rol
+  if (rol === "empresa") {
+    document.querySelectorAll("[data-solo-admin]").forEach(el => el.style.display = "none");
+  }
+
+  // Construir navbar
+  construirNavbar();
+
+  // Renderizar tarjetas
+  renderCards(empresas);
+});
+
+let tabActiva  = "todas";
+let editandoId = null;
+let modalEmpresaId = null;
+
+// ── RENDER CARDS ──────────────────────────────────────────────────────────────
+function fmtCOP(v) { return "$" + Number(v).toLocaleString("es-CO"); }
+
+function initials(nombre = "") {
+  return nombre.split(" ").filter(Boolean).slice(0,2).map(n=>n[0]).join("").toUpperCase();
+}
+
+function renderCards(lista) {
+  document.getElementById("badge-tab").textContent = lista.length;
+  const grid = document.getElementById("cardsGrid");
+
+  if (!lista.length) {
+    grid.innerHTML = `<div class="empty-state">
+      <div class="icon">🏢</div>
+      <h3>Sin resultados</h3>
+      <p>No se encontraron empresas con los filtros aplicados.</p>
+    </div>`;
+    return;
+  }
+
+  grid.innerHTML = lista.map((e, i) => `
+    <div class="empresa-card" style="animation-delay:${i*.06}s" onclick="abrirModal(${e.id})">
+      <div class="card-header">
+        <div class="empresa-avatar">${initials(e.razon_social)}</div>
+        <div class="card-header-info">
+          <div class="card-razon">${e.razon_social}</div>
+          <div class="card-nit">NIT: ${e.nit}</div>
+        </div>
+        <div class="card-status">
+          <div class="status-dot ${e.activo ? 'activa' : 'inactiva'}"></div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-info-row"><span class="icon">👤</span><span><b>${e.representante}</b> · ${e.cargo || '—'}</span></div>
+        <div class="card-info-row"><span class="icon">✉️</span><span>${e.correo}</span></div>
+        <div class="card-info-row"><span class="icon">📍</span><span>${e.direccion || '—'}</span></div>
+        <div class="card-info-row"><span class="icon">🏭</span><span>${e.sector || '—'} · ${e.tamano || '—'}</span></div>
+
+        <div class="card-stats">
+          <div class="stat-box">
+            <div class="stat-val">${e.donaciones}</div>
+            <div class="stat-lbl">Donaciones</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-val" style="font-size:14px;">${fmtCOP(e.valor_total)}</div>
+            <div class="stat-lbl">Valor total</div>
+          </div>
+        </div>
+
+        <div class="card-tags">
+          ${(e.categorias || []).map(c => `<span class="cat-tag">${c}</span>`).join("")}
+        </div>
+      </div>
+      <div class="card-footer" onclick="event.stopPropagation()">
+        <button class="btn-card primary" onclick="abrirModal(${e.id})">Ver detalle</button>
+        <button class="btn-card outline" onclick="editarEmpresa(${e.id})">✏️ Editar</button>
+        <button class="btn-card danger" onclick="toggleActivo(${e.id})">
+          ${e.activo ? "Desactivar" : "Activar"}
+        </button>
+      </div>
+    </div>
+  `).join("");
+}
+
+// ── FILTROS ───────────────────────────────────────────────────────────────────
+function filtrar() {
+  const q       = document.getElementById("searchInput").value.toLowerCase();
+  const sector  = document.getElementById("filterSector").value;
+
+  let lista = empresas.filter(e => {
+    const matchQ = !q ||
+      e.razon_social.toLowerCase().includes(q) ||
+      e.nit.includes(q) ||
+      (e.representante || "").toLowerCase().includes(q);
+    const matchS  = !sector || e.sector === sector;
+    const matchTab= tabActiva==="todas" ||
+                    (tabActiva==="activa" && e.activo) ||
+                    (tabActiva==="sinDonacion" && e.donaciones===0);
+    return matchQ && matchS && matchTab;
+  });
+  renderCards(lista);
+}
+
+function cambiarTab(btn, tab) {
+  document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  tabActiva = tab;
+  filtrar();
+}
+
+// ── MODAL ─────────────────────────────────────────────────────────────────────
+function abrirModal(id) {
+  const e = empresas.find(x => x.id === id);
+  if (!e) return;
+  modalEmpresaId = id;
+
+  document.getElementById("modalNombre").textContent = e.razon_social;
+  document.getElementById("modalNit").textContent    = `NIT: ${e.nit} · ${e.sector || "—"}`;
+
+  document.getElementById("modalGrid").innerHTML = `
+    <div class="modal-field"><label>Representante</label><p>${e.representante || "—"}</p></div>
+    <div class="modal-field"><label>Cargo</label><p>${e.cargo || "—"}</p></div>
+    <div class="modal-field"><label>Correo</label><p>${e.correo}</p></div>
+    <div class="modal-field"><label>Teléfono</label><p>${e.telefono || "—"}</p></div>
+    <div class="modal-field"><label>Dirección</label><p>${e.direccion || "—"}</p></div>
+    <div class="modal-field"><label>Tamaño</label><p>${e.tamano || "—"}</p></div>
+    <div class="modal-field"><label>Total donaciones</label><p style="color:var(--teal-dk);font-weight:800;">${e.donaciones} donaciones</p></div>
+    <div class="modal-field"><label>Valor total donado</label><p style="color:var(--green);font-weight:800;font-size:15px;">${fmtCOP(e.valor_total)}</p></div>
+  `;
+
+  const dons = e.donaciones_recientes || [];
+  document.getElementById("modalDonaciones").innerHTML = dons.length
+    ? `<div class="don-list">${dons.map(d => `
+        <div class="don-row">
+          <div class="don-row-left">
+            <div class="don-row-id">${d.folio}</div>
+            <div class="don-row-desc">${d.desc}</div>
+          </div>
+          <div>
+            <div class="don-row-val">${fmtCOP(d.valor)}</div>
+            <div style="font-size:11px;color:var(--gray-3);text-align:right;">${d.fecha}</div>
+          </div>
+        </div>
+      `).join("")}</div>`
+    : `<div class="don-empty">Esta empresa no tiene donaciones registradas aún.</div>`;
+
+  document.getElementById("modalOverlay").classList.add("open");
+  document.body.style.overflow = "hidden";
+}
+
+function cerrarModal(e) { if (e.target === document.getElementById("modalOverlay")) cerrarModalBtn(); }
+function cerrarModalBtn() { document.getElementById("modalOverlay").classList.remove("open"); document.body.style.overflow = ""; }
+document.addEventListener("keydown", e => { if (e.key === "Escape") cerrarModalBtn(); });
+
+function editarDesdeModal() {
+  cerrarModalBtn();
+  setTimeout(() => editarEmpresa(modalEmpresaId), 200);
+}
+
+// ── FORMULARIO ────────────────────────────────────────────────────────────────
+function abrirFormulario(empresa = null) {
+  editandoId = empresa ? empresa.id : null;
+  const panel = document.getElementById("formPanel");
+
+  document.getElementById("formTitle").textContent    = empresa ? "Editar Empresa" : "Nueva Empresa";
+  document.getElementById("formSubtitle").textContent = empresa ? empresa.razon_social : "Complete los datos para registrar";
+  document.getElementById("btnSave").textContent      = empresa ? "Guardar cambios" : "Registrar Empresa";
+
+  // Mostrar/ocultar campo de contraseña según si es edición
+  document.getElementById("pwdSection").style.display = empresa ? "none" : "block";
+  document.getElementById("pwdField").style.display   = empresa ? "none" : "block";
+
+  // Llenar campos
+  const campos = {
+    fRazon: empresa?.razon_social || "",
+    fNit:   empresa?.nit || "",
+    fSector:empresa?.sector || "",
+    fTamano:empresa?.tamano || "",
+    fTelefono:empresa?.telefono || "",
+    fDireccion:empresa?.direccion || "",
+    fRep:   empresa?.representante || "",
+    fCargo: empresa?.cargo || "",
+    fCorreo:empresa?.correo || "",
+    fPwd:   "",
+  };
+  Object.entries(campos).forEach(([id, val]) => {
+    const el = document.getElementById(id);
+    if (el) el.value = val;
+  });
+
+  // Limpiar errores
+  document.querySelectorAll(".field .err").forEach(e => e.classList.remove("show"));
+  document.querySelectorAll(".field input, .field select").forEach(e => e.classList.remove("invalid"));
+
+  panel.style.display = "block";
+  panel.style.animation = "slideIn .35s ease both";
+}
+
+function editarEmpresa(id) {
+  const e = empresas.find(x => x.id === id);
+  if (e) abrirFormulario(e);
+}
+
+function cerrarFormulario() {
+  document.getElementById("formPanel").style.display = "none";
+  editandoId = null;
+}
+
+function clearErr(id) {
+  document.getElementById("err-" + id)?.classList.remove("show");
+  document.getElementById(id)?.classList.remove("invalid");
+}
+
+function togglePwd() {
+  const inp = document.getElementById("fPwd");
+  const btn = inp.nextElementSibling;
+  inp.type = inp.type === "password" ? "text" : "password";
+  btn.textContent = inp.type === "password" ? "👁️" : "🙈";
+}
+
+function validarForm() {
+  let ok = true;
+  const emailRx = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  const required = [
+    { id:"fRazon",  test: v => v.trim().length > 0 },
+    { id:"fNit",    test: v => v.trim().length > 0 },
+    { id:"fRep",    test: v => v.trim().length > 0 },
+    { id:"fCorreo", test: v => emailRx.test(v.trim()) },
+  ];
+  if (!editandoId) {
+    required.push({ id:"fPwd", test: v => v.length >= 8 });
+  }
+
+  required.forEach(({ id, test }) => {
+    const el  = document.getElementById(id);
+    const err = document.getElementById("err-" + id);
+    if (!el || !test(el.value)) {
+      el?.classList.add("invalid");
+      err?.classList.add("show");
+      ok = false;
+    }
+  });
+  return ok;
+}
+
+async function guardarEmpresa() {
+  if (!validarForm()) return;
+
+  const btn = document.getElementById("btnSave");
+  const original = btn.textContent;
+  btn.textContent = "Guardando…";
+  btn.disabled = true;
+
+  const datos = {
+    razon_social:  document.getElementById("fRazon").value.trim(),
+    nit:           document.getElementById("fNit").value.trim(),
+    sector:        document.getElementById("fSector").value,
+    tamano:        document.getElementById("fTamano").value,
+    telefono:      document.getElementById("fTelefono").value.trim(),
+    direccion:     document.getElementById("fDireccion").value.trim(),
+    representante: document.getElementById("fRep").value.trim(),
+    cargo:         document.getElementById("fCargo").value.trim(),
+    correo:        document.getElementById("fCorreo").value.trim(),
+    password:      document.getElementById("fPwd")?.value || undefined,
+  };
+
+  // ── CONEXIÓN AL BACKEND ─────────────────────────────
+  // Si es nueva: POST /empresas/
+  // Si es edición: PUT /empresas/{id}
+  //
+  // try {
+  //   const result = editandoId
+  //     ? await Empresas.actualizar(editandoId, datos)
+  //     : await Empresas.registrar(datos);
+  //   const lista = await Empresas.listar();
+  //   renderCards(lista);
+  //   UI.toastOk(editandoId ? "Empresa actualizada" : "Empresa registrada exitosamente");
+  //   cerrarFormulario();
+  // } catch (err) {
+  //   UI.toastErr(err.message);
+  // }
+  // ────────────────────────────────────────────────────
+
+  // Simulación demo
+  await new Promise(r => setTimeout(r, 900));
+  btn.textContent = "✓ Guardado";
+  btn.style.background = "var(--green)";
+
+  setTimeout(() => {
+    btn.textContent = original;
+    btn.style.background = "";
+    btn.disabled = false;
+    cerrarFormulario();
+    showToast("✅", editandoId ? "Empresa actualizada correctamente" : "Empresa registrada exitosamente");
+  }, 800);
+}
+
+function toggleActivo(id) {
+  const e = empresas.find(x => x.id === id);
+  if (!e) return;
+  e.activo = e.activo ? 0 : 1;
+  filtrar();
+  showToast(e.activo ? "✅" : "⚠️", e.activo ? "Empresa activada" : "Empresa desactivada");
+
+  
+}
+
+// ── TOAST ─────────────────────────────────────────────────────────────────────
+let toastTimer;
+function showToast(icon, msg) {
+  document.getElementById("toastIcon").textContent = icon;
+  document.getElementById("toastMsg").textContent  = msg;
+  const t = document.getElementById("toast");
+  t.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove("show"), 3000);
+}
+
+
+</script>
+<script src="assets/js/api.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

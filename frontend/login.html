@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Iniciar Sesión – Financiando Sueños | Unbound</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Merriweather:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy:    #1B3A5C;
+      --navy-dk: #122843;
+      --teal:    #00A99D;
+      --teal-dk: #007f75;
+      --teal-lt: #E6F7F6;
+      --gold:    #E8A020;
+      --green:   #27AE60;
+      --red:     #C0392B;
+      --red-lt:  #FDEDEC;
+      --white:   #FFFFFF;
+      --gray-1:  #F4F6F9;
+      --gray-2:  #D8DCE3;
+      --gray-3:  #8C97A8;
+      --text:    #1C2B3A;
+      --radius:  14px;
+      --radius-sm: 8px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+    body {
+      font-family: 'Nunito', sans-serif;
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      background: var(--gray-1);
+    }
+    button { cursor: pointer; font-family: inherit; }
+    input  { font-family: inherit; }
+    a      { text-decoration: none; }
+
+    /* ── TOPBAR ──────────────────────────────────────── */
+    .topbar {
+      height: 5px; flex-shrink: 0;
+      background: linear-gradient(90deg,
+        #E84040 0%,#E84040 16.6%,
+        #E8A020 16.6%,#E8A020 33.3%,
+        #F5D020 33.3%,#F5D020 50%,
+        #2BAD60 50%,#2BAD60 66.6%,
+        #00A99D 66.6%,#00A99D 83.3%,
+        #1B3A5C 83.3%,#1B3A5C 100%);
+    }
+
+    /* ── LAYOUT ──────────────────────────────────────── */
+    .layout {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 0;
+    }
+
+    /* ── LEFT PANEL ──────────────────────────────────── */
+    .left-panel {
+      background: var(--navy);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 56px 52px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Decorative circles */
+    .left-panel::before {
+      content: '';
+      position: absolute;
+      width: 420px; height: 420px;
+      border-radius: 50%;
+      border: 60px solid rgba(0,169,157,.12);
+      top: -120px; right: -120px;
+    }
+    .left-panel::after {
+      content: '';
+      position: absolute;
+      width: 280px; height: 280px;
+      border-radius: 50%;
+      border: 40px solid rgba(255,255,255,.05);
+      bottom: 60px; left: -60px;
+    }
+
+    .left-top { position: relative; z-index: 1; }
+
+    /* Logo */
+    .brand { display: flex; align-items: center; gap: 14px; margin-bottom: 64px; }
+    .brand-icon {
+      width: 48px; height: 48px; border-radius: 50%;
+      background: var(--teal);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; flex-shrink: 0;
+      box-shadow: 0 4px 16px rgba(0,169,157,.4);
+    }
+    .brand-text { color: #fff; }
+    .brand-name { font-family: 'Merriweather', serif; font-size: 18px; font-weight: 700; line-height: 1.2; }
+    .brand-name span { color: var(--teal); }
+    .brand-by   { font-size: 11px; color: rgba(255,255,255,.5); font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; margin-top: 2px; }
+
+    /* Hero text */
+    .left-hero h1 {
+      font-family: 'Merriweather', serif;
+      font-size: 32px; font-weight: 700; color: #fff;
+      line-height: 1.35; margin-bottom: 18px;
+    }
+    .left-hero h1 em { color: var(--teal); font-style: normal; }
+    .left-hero p {
+      font-size: 15px; color: rgba(255,255,255,.65);
+      line-height: 1.7; max-width: 380px; margin-bottom: 36px;
+    }
+
+    /* Stats strip */
+    .stats-strip { display: flex; gap: 28px; flex-wrap: wrap; }
+    .stat-val { font-family: 'Merriweather', serif; font-size: 26px; font-weight: 700; color: var(--teal); line-height: 1; }
+    .stat-lbl { font-size: 12px; color: rgba(255,255,255,.5); margin-top: 3px; font-weight: 700; }
+
+    /* Testimonial */
+    .left-bottom { position: relative; z-index: 1; }
+    .testimonial {
+      border-left: 3px solid var(--teal);
+      padding-left: 18px;
+    }
+    .testimonial p { font-size: 14px; color: rgba(255,255,255,.7); line-height: 1.65; font-style: italic; }
+    .testimonial cite { display: block; margin-top: 10px; font-size: 12px; color: rgba(255,255,255,.45); font-style: normal; font-weight: 700; }
+
+    /* Material icons decorative */
+    .icons-row {
+      display: flex; gap: 12px; margin-top: 28px; flex-wrap: wrap;
+    }
+    .icon-chip {
+      display: flex; align-items: center; gap: 7px;
+      background: rgba(255,255,255,.07);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 20px; padding: 6px 14px;
+      font-size: 12px; color: rgba(255,255,255,.6); font-weight: 700;
+    }
+
+    /* ── RIGHT PANEL ─────────────────────────────────── */
+    .right-panel {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 48px 56px;
+      background: var(--gray-1);
+    }
+
+    .form-box {
+      width: 100%;
+      max-width: 420px;
+    }
+
+    /* Header */
+    .form-header { text-align: center; margin-bottom: 32px; }
+    .form-header h2 {
+      font-family: 'Merriweather', serif;
+      font-size: 22px; font-weight: 700; color: var(--navy);
+      margin-bottom: 6px;
+    }
+    .form-header p { font-size: 14px; color: var(--gray-3); }
+
+    /* Role selector */
+    .role-selector { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 26px; }
+    .role-option { display: none; }
+    .role-label {
+      display: flex; flex-direction: column; align-items: center;
+      gap: 8px; padding: 16px 12px;
+      border: 2px solid var(--gray-2); border-radius: var(--radius);
+      cursor: pointer; background: var(--white);
+      transition: border-color .2s, background .2s, box-shadow .2s;
+      text-align: center;
+    }
+    .role-label:hover { border-color: var(--teal); background: var(--teal-lt); }
+    .role-option:checked + .role-label {
+      border-color: var(--teal);
+      background: var(--teal-lt);
+      box-shadow: 0 0 0 3px rgba(0,169,157,.15);
+    }
+    .role-icon { font-size: 26px; line-height: 1; }
+    .role-name { font-size: 13px; font-weight: 800; color: var(--navy); }
+    .role-desc { font-size: 11px; color: var(--gray-3); margin-top: 1px; }
+
+    /* Divider */
+    .divider {
+      display: flex; align-items: center; gap: 12px;
+      margin-bottom: 22px;
+    }
+    .divider::before, .divider::after { content:''; flex:1; height:1px; background:var(--gray-2); }
+    .divider span { font-size: 12px; color: var(--gray-3); font-weight: 700; white-space: nowrap; }
+
+    /* Fields */
+    .field { margin-bottom: 18px; }
+    .field label {
+      display: block; font-size: 12px; font-weight: 800;
+      color: var(--navy); margin-bottom: 6px; letter-spacing: .3px;
+    }
+    .input-wrap { position: relative; }
+    .input-wrap .icon { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); font-size: 16px; pointer-events: none; }
+    .field input {
+      width: 100%; border: 2px solid var(--gray-2); border-radius: var(--radius-sm);
+      padding: 11px 14px 11px 40px;
+      font-size: 14px; color: var(--text); background: var(--white);
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .field input:focus { outline: none; border-color: var(--teal); box-shadow: 0 0 0 3px rgba(0,169,157,.12); }
+    .field input.error { border-color: var(--red); box-shadow: 0 0 0 3px rgba(192,57,43,.12); }
+
+    .field-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+    .field-row label { margin-bottom: 0; }
+    .forgot { font-size: 12px; color: var(--teal); font-weight: 700; transition: color .2s; }
+    .forgot:hover { color: var(--teal-dk); }
+
+    /* Toggle password */
+    .pwd-toggle {
+      position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+      background: none; border: none; font-size: 16px; color: var(--gray-3);
+      transition: color .2s; padding: 2px;
+    }
+    .pwd-toggle:hover { color: var(--navy); }
+    .pwd-input { padding-right: 42px !important; }
+
+    /* Error message */
+    .field-error { font-size: 11px; color: var(--red); font-weight: 700; margin-top: 5px; display: none; }
+    .field-error.show { display: block; }
+
+    /* Alert box */
+    .alert-box {
+      background: var(--red-lt); border: 1px solid #F1948A;
+      border-radius: var(--radius-sm); padding: 12px 16px;
+      font-size: 13px; color: var(--red); font-weight: 700;
+      margin-bottom: 18px; display: none;
+      animation: shake .4s ease;
+    }
+    .alert-box.show { display: flex; gap: 8px; align-items: center; }
+    @keyframes shake {
+      0%,100%{transform:translateX(0)} 20%{transform:translateX(-6px)} 60%{transform:translateX(6px)} 80%{transform:translateX(-3px)}
+    }
+
+    /* Submit btn */
+    .btn-submit {
+      width: 100%; padding: 14px;
+      background: var(--teal); color: #fff; border: none;
+      border-radius: var(--radius-sm); font-size: 15px; font-weight: 800;
+      letter-spacing: .3px;
+      transition: background .2s, transform .15s, box-shadow .2s;
+      box-shadow: 0 4px 16px rgba(0,169,157,.35);
+      margin-bottom: 16px;
+      position: relative; overflow: hidden;
+    }
+    .btn-submit:hover { background: var(--teal-dk); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0,169,157,.4); }
+    .btn-submit:active { transform: translateY(0); }
+    .btn-submit.loading { pointer-events: none; color: transparent; }
+    .btn-submit.loading::after {
+      content: '';
+      position: absolute; inset: 0; margin: auto;
+      width: 20px; height: 20px; border-radius: 50%;
+      border: 3px solid rgba(255,255,255,.3);
+      border-top-color: #fff;
+      animation: spin .7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Register link */
+    .register-row {
+      text-align: center; font-size: 13px; color: var(--gray-3);
+      margin-top: 4px;
+    }
+    .register-row a { color: var(--teal); font-weight: 800; transition: color .2s; }
+    .register-row a:hover { color: var(--teal-dk); }
+
+    /* Legal */
+    .legal {
+      text-align: center; font-size: 11px; color: var(--gray-3);
+      margin-top: 24px; line-height: 1.6;
+    }
+    .legal a { color: var(--gray-3); text-decoration: underline; }
+
+    /* ── FOOTER ──────────────────────────────────────── */
+    .footer {
+      background: var(--navy); color: rgba(255,255,255,.4);
+      text-align: center; font-size: 11px; padding: 12px 32px;
+      display: flex; justify-content: center; gap: 24px; flex-wrap: wrap;
+    }
+    .footer span { display: flex; align-items: center; gap: 5px; }
+
+    /* ── RECOVERY PANEL ──────────────────────────────── */
+    .recovery-panel {
+      display: none;
+    }
+    .recovery-panel.show { display: block; }
+    .login-panel.hidden { display: none; }
+
+    .back-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 13px; font-weight: 700; color: var(--teal);
+      margin-bottom: 20px; background: none; border: none;
+      transition: color .2s;
+    }
+    .back-link:hover { color: var(--teal-dk); }
+
+    .success-box {
+      background: #EAFAF1; border: 1px solid #82E0AA;
+      border-radius: var(--radius-sm); padding: 16px;
+      text-align: center; font-size: 14px; color: var(--green);
+      font-weight: 700; display: none;
+    }
+    .success-box.show { display: block; animation: fadeUp .4s ease; }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+
+    /* ── RESPONSIVE ──────────────────────────────────── */
+    @media (max-width: 860px) {
+      .layout { grid-template-columns: 1fr; }
+      .left-panel { display: none; }
+      .right-panel { padding: 36px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="topbar"></div>
+
+<div class="layout">
+
+  <!-- ── LEFT PANEL ──────────────────────────────────── -->
+  <div class="left-panel">
+    <div class="left-top">
+
+      <!-- Brand -->
+      <div class="brand">
+        <div class="brand-icon">🏠</div>
+        <div class="brand-text">
+          <div class="brand-name">Financiando <span>Sueños</span></div>
+          <div class="brand-by">Una iniciativa de Unbound</div>
+        </div>
+      </div>
+
+      <!-- Hero -->
+      <div class="left-hero">
+        <h1>Transformamos hogares,<br/><em>transformamos vidas</em></h1>
+        <p>Conectamos empresas donantes con adultos mayores que necesitan materiales para mejorar su hogar. Cada donación es un sueño que se hace realidad.</p>
+
+        <!-- Stats -->
+        <div class="stats-strip">
+          <div class="stat-item">
+            <div class="stat-val">47</div>
+            <div class="stat-lbl">Donaciones realizadas</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-val">23</div>
+            <div class="stat-lbl">Hogares beneficiados</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-val">12</div>
+            <div class="stat-lbl">Empresas activas</div>
+          </div>
+        </div>
+
+        <!-- Material chips -->
+        <div class="icons-row">
+          <div class="icon-chip">🧱 Cemento</div>
+          <div class="icon-chip">🎨 Pintura</div>
+          <div class="icon-chip">🛏️ Camas</div>
+          <div class="icon-chip">📺 Televisores</div>
+          <div class="icon-chip">🏠 Tejas</div>
+          <div class="icon-chip">⚡ Electrodomésticos</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Testimonial -->
+    <div class="left-bottom">
+      <div class="testimonial">
+        <p>"Gracias a Financiando Sueños pudimos reparar el techo de doña María. Ahora duerme sin miedo a las lluvias."</p>
+        <cite>— Equipo Unbound Colombia, Bogotá 2026</cite>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── RIGHT PANEL ──────────────────────────────────── -->
+  <div class="right-panel">
+    <div class="form-box">
+
+      <!-- LOGIN PANEL -->
+      <div class="login-panel" id="loginPanel">
+
+        <div class="form-header">
+          <h2>Bienvenido de nuevo</h2>
+          <p>Inicia sesión para continuar en el sistema</p>
+        </div>
+
+        <!-- Role selector -->
+        <div class="role-selector">
+          <input type="radio" name="role" id="roleAdmin" class="role-option" value="admin" checked/>
+          <label for="roleAdmin" class="role-label">
+            <span class="role-icon">🏢</span>
+            <span class="role-name">Unbound</span>
+            <span class="role-desc">Administrador ONG</span>
+          </label>
+
+          <input type="radio" name="role" id="roleEmpresa" class="role-option" value="empresa"/>
+          <label for="roleEmpresa" class="role-label">
+            <span class="role-icon">🏭</span>
+            <span class="role-name">Empresa</span>
+            <span class="role-desc">Empresa Donante</span>
+          </label>
+        </div>
+
+        <div class="divider"><span>Ingresa tus credenciales</span></div>
+
+        <!-- Alert box -->
+        <div class="alert-box" id="alertBox">
+          <span>⚠️</span>
+          <span id="alertMsg">Correo o contraseña incorrectos. Intenta de nuevo.</span>
+        </div>
+
+        <!-- Email -->
+        <div class="field">
+          <label for="email">Correo electrónico</label>
+          <div class="input-wrap">
+            <span class="icon">✉️</span>
+            <input type="email" id="email" placeholder="usuario@ejemplo.com" autocomplete="email" oninput="clearErrors()"/>
+          </div>
+          <div class="field-error" id="emailError">Ingresa un correo válido.</div>
+        </div>
+
+        <!-- Password -->
+        <div class="field">
+          <div class="field-row">
+            <label for="password">Contraseña</label>
+            <a href="#" class="forgot" onclick="mostrarRecuperacion(event)">¿Olvidaste tu contraseña?</a>
+          </div>
+          <div class="input-wrap">
+            <span class="icon">🔒</span>
+            <input type="password" id="password" class="pwd-input" placeholder="••••••••" autocomplete="current-password" oninput="clearErrors()" onkeydown="handleEnter(event)"/>
+            <button class="pwd-toggle" type="button" onclick="togglePwd()" id="pwdToggle" title="Mostrar / ocultar">👁️</button>
+          </div>
+          <div class="field-error" id="pwdError">La contraseña no puede estar vacía.</div>
+        </div>
+
+        <!-- Submit -->
+        <button class="btn-submit" id="btnSubmit" onclick="handleLogin()">
+          Ingresar al sistema
+        </button>
+
+        <div class="register-row">
+          ¿Eres empresa donante y no tienes cuenta?
+          <a href="registro_empresa.html">Regístrate aquí →</a>
+        </div>
+
+        <div class="legal">
+          Al ingresar aceptas nuestros <a href="#">Términos de uso</a> y la
+          <a href="#">Política de privacidad</a> conforme a la Ley 1581 de 2012.
+        </div>
+      </div>
+
+      <!-- RECOVERY PANEL -->
+      <div class="recovery-panel" id="recoveryPanel">
+
+        <button class="back-link" onclick="volverLogin()">← Volver al inicio de sesión</button>
+
+        <div class="form-header" style="text-align:left;">
+          <h2>Recuperar contraseña</h2>
+          <p>Te enviaremos un enlace a tu correo para restablecer tu contraseña.</p>
+        </div>
+
+        <div class="success-box" id="successBox">
+          ✅ Correo enviado exitosamente. Revisa tu bandeja de entrada.
+        </div>
+
+        <div id="recoveryForm">
+          <div class="field">
+            <label for="recoveryEmail">Correo electrónico registrado</label>
+            <div class="input-wrap">
+              <span class="icon">✉️</span>
+              <input type="email" id="recoveryEmail" placeholder="usuario@ejemplo.com"/>
+            </div>
+          </div>
+          <button class="btn-submit" onclick="handleRecovery()">
+            Enviar enlace de recuperación
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <span>🏠 Financiando Sueños</span>
+  <span>Una iniciativa de Unbound Colombia</span>
+  <span>Ley 1581 de 2012 – Protección de Datos</span>
+  <span>v1.0 · 2026</span>
+</footer>
+
+<script>
+  
+  const DEMO_USERS = [
+    { email: 'admin@unbound.org.co',   password: 'Admin2026',  role: 'admin',   redirect: 'adultos.html' },
+    { email: 'empresa@materiales.com', password: 'Empresa2026',role: 'empresa', redirect: 'adultos.html' },
+  ];
+
+  // ── TOGGLE PASSWORD ───────────────────────────────────────────────────────
+  let pwdVisible = false;
+  function togglePwd() {
+    pwdVisible = !pwdVisible;
+    const input = document.getElementById('password');
+    const btn   = document.getElementById('pwdToggle');
+    input.type  = pwdVisible ? 'text' : 'password';
+    btn.textContent = pwdVisible ? '🙈' : '👁️';
+  }
+
+  // ── VALIDACIÓN ─────────────────────────────────────────────────────────────
+  function clearErrors() {
+    document.getElementById('alertBox').classList.remove('show');
+    document.getElementById('emailError').classList.remove('show');
+    document.getElementById('pwdError').classList.remove('show');
+    document.getElementById('email').classList.remove('error');
+    document.getElementById('password').classList.remove('error');
+  }
+
+  function handleEnter(e) {
+    if (e.key === 'Enter') handleLogin();
+  }
+
+  function validateForm() {
+    const email = document.getElementById('email').value.trim();
+    const pwd   = document.getElementById('password').value;
+    let ok = true;
+
+    const emailRx = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRx.test(email)) {
+      document.getElementById('emailError').classList.add('show');
+      document.getElementById('email').classList.add('error');
+      ok = false;
+    }
+    if (!pwd) {
+      document.getElementById('pwdError').classList.add('show');
+      document.getElementById('password').classList.add('error');
+      ok = false;
+    }
+    return ok;
+  }
+
+  // ── LOGIN ──────────────────────────────────────────────────────────────────
+  async function handleLogin() {
+    clearErrors();
+    if (!validateForm()) return;
+
+    const correo  = document.getElementById("email").value.trim();
+    const pwd     = document.getElementById("password").value;
+    const rol     = document.querySelector('input[name="role"]:checked').value;
+    const btn     = document.getElementById("btnSubmit");
+
+    btn.classList.add("loading");
+    btn.disabled = true;
+
+    try {
+      // Llamada real al backend
+      const res = await fetch("http://localhost:8000/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ correo, password: pwd, rol })
+      });
+
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.detail || "Error al iniciar sesión");
+      }
+
+      const data = await res.json();
+
+      // Guardar sesión en localStorage
+      localStorage.setItem("fs_token",  data.access_token);
+      localStorage.setItem("fs_rol",    data.rol);
+      localStorage.setItem("fs_nombre", data.nombre);
+      localStorage.setItem("fs_correo", data.correo);
+
+      // Redirigir
+      btn.textContent = "✓ ¡Bienvenido!";
+      btn.style.background = "var(--green)";
+      await new Promise(r => setTimeout(r, 700));
+      window.location.href = "dashboard.html";
+
+    } catch (err) {
+      btn.classList.remove("loading");
+      btn.disabled = false;
+      btn.textContent = "Ingresar al sistema";
+      btn.style.background = "";
+      showError(err.message);
+    }
+  }
+
+  function showError(msg) {
+    document.getElementById('alertMsg').textContent = msg;
+    document.getElementById('alertBox').classList.add('show');
+    document.getElementById('email').classList.add('error');
+    document.getElementById('password').classList.add('error');
+  }
+
+  // ── RECOVERY ──────────────────────────────────────────────────────────────
+  function mostrarRecuperacion(e) {
+    e.preventDefault();
+    document.getElementById('loginPanel').classList.add('hidden');
+    document.getElementById('recoveryPanel').classList.add('show');
+  }
+  function volverLogin() {
+    document.getElementById('loginPanel').classList.remove('hidden');
+    document.getElementById('recoveryPanel').classList.remove('show');
+    document.getElementById('successBox').classList.remove('show');
+  }
+  async function handleRecovery() {
+    const email = document.getElementById('recoveryEmail').value.trim();
+    const emailRx = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRx.test(email)) { alert('Ingresa un correo válido.'); return; }
+
+    const btn = document.querySelector('#recoveryPanel .btn-submit');
+    btn.classList.add('loading'); btn.disabled = true;
+    await delay(1400);
+    btn.classList.remove('loading'); btn.disabled = false;
+
+    document.getElementById('recoveryForm').style.opacity = '.4';
+    document.getElementById('recoveryForm').style.pointerEvents = 'none';
+    document.getElementById('successBox').classList.add('show');
+
+    
+  }
+
+  // ── UTIL ───────────────────────────────────────────────────────────────────
+  function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+  // Auto-fill demo hint
+  document.addEventListener('DOMContentLoaded', () => {
+    // Si ya hay sesión, redirigir
+    if (localStorage.getItem('fs_token')) {
+      // window.location.href = 'adultos.html'; // descomentar en producción
+    }
+  
+    const hint = document.createElement('div');
+    hint.style.cssText = 'margin-top:20px;background:#EAF2FF;border:1px solid #AED6F1;border-radius:8px;padding:12px 16px;font-size:12px;color:#1B3A5C;';
+    hint.innerHTML = `
+      <div style="font-weight:800;margin-bottom:6px;">🔑 Credenciales de demostración</div>
+      <div style="margin-bottom:3px;"><b>Admin:</b> admin@unbound.org.co / Admin2026</div>
+      <div><b>Empresa:</b> empresa@materiales.com / Empresa2026</div>
+      <div style="margin-top:6px;font-size:11px;color:#7F8C8D;">Selecciona el rol correspondiente antes de ingresar.</div>
+    `;
+    document.querySelector('.legal').after(hint);
+  });
+</script>
+<script src="assets/js/api.js"></script>
+</body>
+</html>
+

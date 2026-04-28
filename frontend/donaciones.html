@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Donaciones – Financiando Sueños | Unbound</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    /* ── TOKENS ─────────────────────────────────────── */
+    :root {
+      --navy:     #1B3A5C;
+      --navy-dk:  #122843;
+      --teal:     #00A99D;
+      --teal-dk:  #007f75;
+      --teal-lt:  #E6F7F6;
+      --gold:     #E8A020;
+      --gold-lt:  #FEF3E2;
+      --green:    #27AE60;
+      --green-lt: #EAFAF1;
+      --red:      #C0392B;
+      --red-lt:   #FDEDEC;
+      --orange:   #E67E22;
+      --orange-lt:#FEF5E7;
+      --bg:       #F4F6F9;
+      --white:    #FFFFFF;
+      --gray-1:   #F0F2F5;
+      --gray-2:   #D8DCE3;
+      --gray-3:   #8C97A8;
+      --gray-4:   #4A5568;
+      --text:     #1C2B3A;
+      --radius:   12px;
+      --radius-sm:8px;
+      --shadow:   0 2px 12px rgba(27,58,92,.09);
+      --shadow-h: 0 8px 28px rgba(27,58,92,.16);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Nunito', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+    button { cursor: pointer; font-family: inherit; }
+    input, select, textarea { font-family: inherit; }
+
+    /* ── TOPBAR ─────────────────────────────────────── */
+    .topbar {
+      height: 5px;
+      background: linear-gradient(90deg,
+        #E84040 0%,#E84040 16.6%,
+        #E8A020 16.6%,#E8A020 33.3%,
+        #F5D020 33.3%,#F5D020 50%,
+        #2BAD60 50%,#2BAD60 66.6%,
+        #00A99D 66.6%,#00A99D 83.3%,
+        #1B3A5C 83.3%,#1B3A5C 100%);
+    }
+
+    /* ── NAVBAR ─────────────────────────────────────── */
+    .navbar {
+      background: var(--white);
+      border-bottom: 1px solid var(--gray-2);
+      padding: 0 48px;
+      display: flex; align-items: center; gap: 40px;
+      height: 68px;
+      position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 1px 8px rgba(0,0,0,.06);
+    }
+    .logo { display: flex; align-items: center; gap: 10px; }
+    .logo-icon { width: 38px; height: 38px; background: var(--teal); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+    .logo-text { font-family: 'Merriweather', serif; font-size: 13px; font-weight: 700; color: var(--navy); letter-spacing: .5px; }
+    .logo-sub  { font-size: 10px; color: var(--teal); font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; }
+    .nav-links { display: flex; gap: 4px; margin-left: 8px; }
+    .nav-links a { font-size: 14px; font-weight: 700; color: var(--navy); padding: 6px 14px; border-radius: 6px; text-decoration: none; transition: background .2s, color .2s; }
+    .nav-links a:hover { background: var(--gray-1); color: var(--teal); }
+    .nav-links a.active { color: var(--teal); }
+    .nav-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+    .nav-icon-btn { width: 36px; height: 36px; border-radius: 8px; border: 1.5px solid var(--gray-2); background: transparent; display: flex; align-items: center; justify-content: center; font-size: 16px; color: var(--navy); transition: border-color .2s, background .2s; }
+    .nav-icon-btn:hover { border-color: var(--teal); background: var(--gray-1); }
+    .user-chip { display: flex; align-items: center; gap: 8px; background: var(--gray-1); border-radius: 20px; padding: 4px 14px 4px 4px; font-size: 13px; font-weight: 700; color: var(--navy); }
+    .user-avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--teal); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; }
+
+    /* ── PAGE HEADER ────────────────────────────────── */
+    .page-header {
+      background: var(--white);
+      border-bottom: 1px solid var(--gray-2);
+      padding: 28px 48px 0;
+    }
+    .page-header-top { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 0; }
+    .page-title-block h1 { font-family: 'Merriweather', serif; font-size: 24px; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+    .page-title-block p  { font-size: 14px; color: var(--gray-3); }
+
+    .btn-nueva {
+      display: flex; align-items: center; gap: 8px;
+      background: var(--teal); color: #fff; border: none;
+      border-radius: var(--radius-sm); padding: 11px 22px;
+      font-size: 14px; font-weight: 800;
+      transition: background .2s, transform .15s;
+      box-shadow: 0 3px 12px rgba(0,169,157,.3);
+    }
+    .btn-nueva:hover { background: var(--teal-dk); transform: translateY(-1px); }
+    .btn-nueva .plus { font-size: 18px; line-height: 1; }
+
+    /* Tabs */
+    .page-tabs { display: flex; gap: 0; margin-top: 20px; }
+    .tab-btn {
+      padding: 12px 24px; font-size: 14px; font-weight: 700;
+      color: var(--gray-3); border: none; background: none;
+      border-bottom: 3px solid transparent;
+      transition: color .2s, border-color .2s;
+    }
+    .tab-btn:hover { color: var(--navy); }
+    .tab-btn.active { color: var(--teal); border-bottom-color: var(--teal); }
+
+    /* ── KPI STRIP ──────────────────────────────────── */
+    .kpi-strip {
+      display: grid; grid-template-columns: repeat(4,1fr);
+      gap: 16px; padding: 24px 48px;
+    }
+    .kpi-card {
+      background: var(--white); border: 1px solid var(--gray-2);
+      border-radius: var(--radius); padding: 20px 22px;
+      box-shadow: var(--shadow);
+      display: flex; flex-direction: column; gap: 4px;
+      animation: fadeUp .4s ease both;
+    }
+    .kpi-card:nth-child(1){animation-delay:.05s}
+    .kpi-card:nth-child(2){animation-delay:.10s}
+    .kpi-card:nth-child(3){animation-delay:.15s}
+    .kpi-card:nth-child(4){animation-delay:.20s}
+
+    @keyframes fadeUp {
+      from { opacity:0; transform:translateY(14px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+
+    .kpi-label { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .8px; color: var(--gray-3); }
+    .kpi-value { font-family: 'Merriweather', serif; font-size: 30px; font-weight: 700; color: var(--navy); line-height: 1.1; }
+    .kpi-sub   { font-size: 12px; color: var(--gray-3); margin-top: 2px; }
+    .kpi-badge { display: inline-block; border-radius: 20px; padding: 2px 9px; font-size: 11px; font-weight: 800; margin-top: 2px; }
+    .kpi-badge.up   { background: var(--green-lt); color: var(--green); }
+    .kpi-badge.warn { background: var(--orange-lt); color: var(--orange); }
+    .kpi-accent-bar { height: 3px; border-radius: 2px; margin-bottom: 12px; }
+
+    /* ── MAIN AREA ──────────────────────────────────── */
+    .main-area { padding: 0 48px 48px; display: flex; gap: 24px; align-items: flex-start; }
+
+    /* ── TABLE PANEL ────────────────────────────────── */
+    .table-panel { flex: 1; min-width: 0; }
+
+    .toolbar {
+      display: flex; gap: 12px; align-items: center;
+      margin-bottom: 16px; flex-wrap: wrap;
+    }
+    .search-wrap { position: relative; flex: 1; min-width: 220px; }
+    .search-input {
+      width: 100%; border: 1.5px solid var(--gray-2); border-radius: var(--radius-sm);
+      padding: 10px 14px 10px 40px; font-size: 14px; color: var(--text);
+      background: var(--white); transition: border-color .2s;
+    }
+    .search-input:focus { outline: none; border-color: var(--teal); }
+    .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 15px; color: var(--gray-3); }
+    .filter-select {
+      border: 1.5px solid var(--gray-2); border-radius: var(--radius-sm);
+      padding: 10px 12px; font-size: 13px; color: var(--text);
+      background: var(--white); transition: border-color .2s;
+    }
+    .filter-select:focus { outline: none; border-color: var(--teal); }
+    .btn-export {
+      display: flex; align-items: center; gap: 6px;
+      border: 1.5px solid var(--gray-2); border-radius: var(--radius-sm);
+      padding: 10px 16px; font-size: 13px; font-weight: 700;
+      color: var(--navy); background: var(--white);
+      transition: border-color .2s, background .2s;
+    }
+    .btn-export:hover { border-color: var(--teal); background: var(--teal-lt); color: var(--teal-dk); }
+
+    /* TABLE */
+    .table-card { background: var(--white); border: 1px solid var(--gray-2); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+    .table-card table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .table-card thead th {
+      background: var(--navy); color: #fff;
+      padding: 13px 16px; text-align: left;
+      font-size: 11px; font-weight: 800; letter-spacing: .6px; text-transform: uppercase;
+    }
+    .table-card thead th:first-child { border-radius: 0; }
+    .table-card tbody tr { border-bottom: 1px solid var(--gray-1); transition: background .15s; }
+    .table-card tbody tr:last-child { border-bottom: none; }
+    .table-card tbody tr:hover { background: #F7FFFE; cursor: pointer; }
+    .table-card tbody td { padding: 13px 16px; color: var(--text); vertical-align: middle; }
+
+    .td-id { font-weight: 800; color: var(--teal-dk); font-size: 12px; }
+    .td-empresa { font-weight: 700; color: var(--navy); }
+    .td-sub { font-size: 11px; color: var(--gray-3); margin-top: 2px; }
+
+    .status-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      border-radius: 20px; padding: 4px 11px;
+      font-size: 11px; font-weight: 800;
+    }
+    .status-badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; }
+    .s-registrada  { background: var(--green-lt);  color: var(--green);  }
+    .s-registrada::before  { background: var(--green); }
+    .s-verificacion{ background: var(--gold-lt);   color: #9A7D0A;       }
+    .s-verificacion::before{ background: var(--gold); }
+    .s-pendiente   { background: var(--orange-lt); color: var(--orange); }
+    .s-pendiente::before   { background: var(--orange); }
+    .s-rechazada   { background: var(--red-lt);    color: var(--red);    }
+    .s-rechazada::before   { background: var(--red); }
+
+    .td-valor { font-weight: 800; color: var(--navy); font-size: 13px; }
+    .td-items { font-size: 12px; color: var(--gray-3); }
+
+    .action-btns { display: flex; gap: 6px; }
+    .tbl-btn {
+      border: 1.5px solid var(--gray-2); border-radius: 6px;
+      padding: 5px 10px; font-size: 12px; font-weight: 700;
+      color: var(--navy); background: var(--white);
+      transition: border-color .2s, background .2s, color .2s;
+    }
+    .tbl-btn:hover { border-color: var(--teal); background: var(--teal-lt); color: var(--teal-dk); }
+    .tbl-btn.danger:hover { border-color: var(--red); background: var(--red-lt); color: var(--red); }
+
+    /* Pagination */
+    .pagination { display: flex; justify-content: space-between; align-items: center; padding: 14px 20px; border-top: 1px solid var(--gray-1); }
+    .pg-info { font-size: 13px; color: var(--gray-3); }
+    .pg-buttons { display: flex; gap: 5px; }
+    .pg-btn { width: 32px; height: 32px; border-radius: 6px; border: 1.5px solid var(--gray-2); background: var(--white); font-size: 13px; font-weight: 700; color: var(--navy); display: flex; align-items: center; justify-content: center; transition: all .2s; }
+    .pg-btn:hover { border-color: var(--teal); color: var(--teal); }
+    .pg-btn.active { background: var(--navy); color: #fff; border-color: var(--navy); }
+
+    /* ── SIDE FORM PANEL ────────────────────────────── */
+    .form-panel {
+      width: 380px; flex-shrink: 0;
+      background: var(--white); border: 1px solid var(--gray-2);
+      border-radius: var(--radius); box-shadow: var(--shadow);
+      position: sticky; top: 88px;
+      animation: slideIn .35s ease both;
+    }
+    @keyframes slideIn {
+      from { opacity:0; transform: translateX(20px); }
+      to   { opacity:1; transform: translateX(0); }
+    }
+
+    .form-header {
+      background: var(--navy); color: #fff;
+      padding: 20px 24px; border-radius: var(--radius) var(--radius) 0 0;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .form-header h2 { font-family: 'Merriweather', serif; font-size: 16px; font-weight: 700; }
+    .form-header p  { font-size: 12px; color: #AED6F1; margin-top: 2px; }
+    .form-collapse-btn { background: rgba(255,255,255,.12); border: none; color: #fff; width: 30px; height: 30px; border-radius: 6px; font-size: 16px; display: flex; align-items: center; justify-content: center; transition: background .2s; }
+    .form-collapse-btn:hover { background: rgba(255,255,255,.22); }
+
+    .form-body { padding: 20px 24px; max-height: calc(100vh - 200px); overflow-y: auto; }
+
+    /* Steps indicator */
+    .steps-indicator { display: flex; align-items: center; margin-bottom: 24px; }
+    .step-dot { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; flex-shrink: 0; transition: all .3s; }
+    .step-dot.done    { background: var(--green); color: #fff; }
+    .step-dot.current { background: var(--teal); color: #fff; box-shadow: 0 0 0 3px rgba(0,169,157,.25); }
+    .step-dot.pending { background: var(--gray-1); color: var(--gray-3); }
+    .step-line { flex: 1; height: 2px; background: var(--gray-2); margin: 0 6px; }
+    .step-line.done { background: var(--teal); }
+    .step-label-row { display: flex; justify-content: space-between; font-size: 10px; font-weight: 800; color: var(--gray-3); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 20px; }
+    .step-label-row span.active { color: var(--teal); }
+
+    /* Form fields */
+    .field { margin-bottom: 16px; }
+    .field label { display: block; font-size: 12px; font-weight: 800; color: var(--navy); margin-bottom: 5px; letter-spacing: .3px; }
+    .field label .req { color: var(--red); }
+    .field input, .field select, .field textarea {
+      width: 100%; border: 1.5px solid var(--gray-2); border-radius: var(--radius-sm);
+      padding: 9px 12px; font-size: 13px; color: var(--text);
+      background: var(--white); transition: border-color .2s, box-shadow .2s;
+    }
+    .field input:focus, .field select:focus, .field textarea:focus {
+      outline: none; border-color: var(--teal);
+      box-shadow: 0 0 0 3px rgba(0,169,157,.12);
+    }
+    .field textarea { height: 72px; resize: none; }
+    .field .hint { font-size: 11px; color: var(--gray-3); margin-top: 4px; }
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+    /* Warning box */
+    .warning-box {
+      background: var(--gold-lt); border: 1px solid #F9E79F;
+      border-radius: var(--radius-sm); padding: 10px 14px;
+      font-size: 12px; color: #7D6608; margin-bottom: 16px;
+      display: flex; gap: 8px; align-items: flex-start;
+    }
+    .warning-box .icon { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+
+    /* Items table inside form */
+    .items-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .items-header label { font-size: 12px; font-weight: 800; color: var(--navy); }
+    .btn-add-item { background: var(--teal-lt); color: var(--teal-dk); border: 1px solid var(--teal); border-radius: 6px; padding: 5px 12px; font-size: 12px; font-weight: 800; transition: background .2s; }
+    .btn-add-item:hover { background: var(--teal); color: #fff; }
+
+    .item-row {
+      background: var(--gray-1); border-radius: var(--radius-sm);
+      padding: 10px 12px; margin-bottom: 8px;
+      display: flex; flex-direction: column; gap: 8px;
+      animation: fadeIn .25s ease;
+    }
+    @keyframes fadeIn { from{opacity:0;transform:scale(.97)} to{opacity:1;transform:scale(1)} }
+    .item-row-top { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: start; }
+    .item-row-bottom { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+    .item-row select, .item-row input {
+      border: 1.5px solid var(--gray-2); border-radius: 6px;
+      padding: 6px 8px; font-size: 12px; color: var(--text);
+      background: var(--white); width: 100%;
+    }
+    .item-row select:focus, .item-row input:focus { outline: none; border-color: var(--teal); }
+    .btn-remove-item { background: none; border: none; color: var(--gray-3); font-size: 16px; padding: 2px 6px; border-radius: 4px; transition: color .2s, background .2s; }
+    .btn-remove-item:hover { color: var(--red); background: var(--red-lt); }
+
+    .total-row {
+      display: flex; justify-content: space-between; align-items: center;
+      background: var(--navy); color: #fff; border-radius: var(--radius-sm);
+      padding: 10px 14px; margin: 4px 0 16px; font-size: 13px; font-weight: 800;
+    }
+    .total-row .total-val { font-family: 'Merriweather', serif; font-size: 16px; color: var(--teal); }
+
+    .upload-zone {
+      border: 2px dashed var(--gray-2); border-radius: var(--radius-sm);
+      padding: 18px; text-align: center; color: var(--gray-3); font-size: 13px;
+      transition: border-color .2s, background .2s; margin-bottom: 16px;
+    }
+    .upload-zone:hover { border-color: var(--teal); background: var(--teal-lt); }
+    .upload-zone .icon { font-size: 24px; margin-bottom: 4px; }
+    .upload-zone small { font-size: 11px; display: block; margin-top: 3px; }
+
+    /* Form footer */
+    .form-footer { padding: 16px 24px; border-top: 1px solid var(--gray-1); display: flex; gap: 10px; background: var(--white); border-radius: 0 0 var(--radius) var(--radius); }
+    .btn-cancel-form { flex: 1; background: var(--white); color: var(--gray-4); border: 1.5px solid var(--gray-2); border-radius: var(--radius-sm); padding: 10px; font-size: 13px; font-weight: 700; transition: border-color .2s; }
+    .btn-cancel-form:hover { border-color: var(--red); color: var(--red); }
+    .btn-save-form   { flex: 2; background: var(--green); color: #fff; border: none; border-radius: var(--radius-sm); padding: 10px; font-size: 13px; font-weight: 800; transition: background .2s, transform .15s; box-shadow: 0 3px 12px rgba(39,174,96,.3); }
+    .btn-save-form:hover { background: #1e8449; transform: translateY(-1px); }
+
+    /* ── MODAL DETALLE ──────────────────────────────── */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(10,20,35,.55); z-index: 200; display: none; align-items: center; justify-content: center; backdrop-filter: blur(3px); }
+    .modal-overlay.open { display: flex; }
+    .modal { background: var(--white); border-radius: 16px; width: 100%; max-width: 640px; max-height: 90vh; overflow-y: auto; box-shadow: 0 24px 64px rgba(0,0,0,.25); animation: slideUp .3s ease; }
+    @keyframes slideUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+
+    .modal-topbar { height: 4px; background: linear-gradient(90deg, var(--teal), var(--navy)); }
+    .modal-header-inner { padding: 20px 28px; display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid var(--gray-1); }
+    .modal-header-inner h2 { font-family: 'Merriweather', serif; font-size: 20px; color: var(--navy); }
+    .modal-header-inner .modal-id { font-size: 12px; color: var(--gray-3); margin-top: 3px; }
+    .modal-close { background: var(--gray-1); border: none; color: var(--navy); width: 32px; height: 32px; border-radius: 8px; font-size: 18px; display: flex; align-items: center; justify-content: center; transition: background .2s; }
+    .modal-close:hover { background: var(--red-lt); color: var(--red); }
+
+    .modal-body { padding: 24px 28px; }
+    .modal-section { margin-bottom: 20px; }
+    .modal-section-title { font-size: 11px; font-weight: 800; color: var(--teal-dk); text-transform: uppercase; letter-spacing: .8px; margin-bottom: 12px; padding-bottom: 6px; border-bottom: 2px solid var(--teal-lt); }
+    .modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .modal-field label { font-size: 11px; color: var(--gray-3); font-weight: 700; text-transform: uppercase; letter-spacing: .5px; display: block; margin-bottom: 2px; }
+    .modal-field p     { font-size: 14px; color: var(--text); font-weight: 600; }
+
+    /* Items en modal */
+    .modal-items-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .modal-items-table th { background: var(--gray-1); padding: 8px 10px; text-align: left; font-size: 11px; color: var(--gray-3); text-transform: uppercase; font-weight: 800; }
+    .modal-items-table td { padding: 9px 10px; border-bottom: 1px solid var(--gray-1); }
+    .modal-items-table tr:last-child td { border-bottom: none; }
+    .modal-total-row { background: var(--navy); color: #fff; display: flex; justify-content: space-between; padding: 10px 14px; border-radius: var(--radius-sm); margin-top: 8px; font-size: 13px; font-weight: 800; }
+    .modal-total-row span { color: var(--teal); font-family: 'Merriweather', serif; font-size: 15px; }
+
+    .modal-footer { padding: 16px 28px; border-top: 1px solid var(--gray-1); display: flex; gap: 10px; }
+    .btn-cert { flex: 1; background: var(--teal); color: #fff; border: none; border-radius: var(--radius-sm); padding: 10px; font-size: 13px; font-weight: 800; transition: background .2s; }
+    .btn-cert:hover { background: var(--teal-dk); }
+    .btn-close-modal { flex: 1; background: var(--white); color: var(--navy); border: 1.5px solid var(--gray-2); border-radius: var(--radius-sm); padding: 10px; font-size: 13px; font-weight: 700; transition: border-color .2s; }
+    .btn-close-modal:hover { border-color: var(--navy); }
+
+    /* ── TOAST ──────────────────────────────────────── */
+    .toast { position: fixed; bottom: 28px; right: 28px; background: var(--navy); color: #fff; padding: 12px 20px; border-radius: 10px; font-size: 14px; font-weight: 700; box-shadow: 0 8px 24px rgba(0,0,0,.2); transform: translateY(80px); opacity: 0; transition: all .3s ease; z-index: 300; display: flex; align-items: center; gap: 8px; }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast .toast-icon { font-size: 18px; }
+
+    /* ── EMPTY STATE ────────────────────────────────── */
+    .empty-state { text-align: center; padding: 48px 24px; color: var(--gray-3); }
+    .empty-state .icon { font-size: 40px; margin-bottom: 10px; }
+    .empty-state h3 { font-size: 16px; color: var(--navy); margin-bottom: 4px; }
+  </style>
+</head>
+<body>
+
+<div class="topbar"></div>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="logo">
+    <div class="logo-icon">🏠</div>
+    <div>
+      <div class="logo-text">Financiando Sueños</div>
+      <div class="logo-sub">Unbound Colombia</div>
+    </div>
+  </div>
+  <div class="nav-links">
+    <a href="index.html">Inicio</a>
+    <a href="adultos.html">Beneficiarios</a>
+    <a href="donaciones.html" class="active">Donaciones</a>
+    <a href="reportes.html" data-solo-admin>Reportes</a>
+    <a href="#">Configuración</a>
+  </div>
+  <div class="nav-right">
+    <button class="nav-icon-btn">🔍</button>
+    <button class="nav-icon-btn">🔔</button>
+    <div class="user-chip">
+      <div class="user-avatar">AU</div>
+      Admin Unbound
+    </div>
+  </div>
+</nav>
+
+<!-- PAGE HEADER + TABS -->
+<div class="page-header">
+  <div class="page-header-top">
+    <div class="page-title-block">
+      <h1>Donaciones de Materiales</h1>
+      <p>Registro y seguimiento de todas las donaciones en especie para mejoras del hogar</p>
+    </div>
+    <button class="btn-nueva" onclick="abrirFormulario()">
+      <span class="plus">+</span> Nueva Donación
+    </button>
+  </div>
+  <div class="page-tabs">
+    <button class="tab-btn active" onclick="cambiarTab(this,'todas')">Todas <span id="badge-todas" style="background:var(--teal);color:#fff;border-radius:10px;padding:1px 8px;font-size:11px;margin-left:4px;">7</span></button>
+    <button class="tab-btn" onclick="cambiarTab(this,'registrada')">Registradas</button>
+    <button class="tab-btn" onclick="cambiarTab(this,'verificacion')">En verificación</button>
+    <button class="tab-btn" onclick="cambiarTab(this,'pendiente')">Pendientes</button>
+  </div>
+</div>
+
+<!-- KPI STRIP -->
+<div class="kpi-strip">
+  <div class="kpi-card">
+    <div class="kpi-accent-bar" style="background:var(--teal);"></div>
+    <div class="kpi-label">Total donaciones</div>
+    <div class="kpi-value">47</div>
+    <span class="kpi-badge up">▲ +8 este mes</span>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-accent-bar" style="background:var(--green);"></div>
+    <div class="kpi-label">Valor total en materiales</div>
+    <div class="kpi-value" style="font-size:22px;">$38.4M</div>
+    <div class="kpi-sub">COP acumulado</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-accent-bar" style="background:var(--gold);"></div>
+    <div class="kpi-label">Hogares beneficiados</div>
+    <div class="kpi-value">23</div>
+    <div class="kpi-sub">de 28 registrados</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-accent-bar" style="background:var(--orange);"></div>
+    <div class="kpi-label">Pendientes de soporte</div>
+    <div class="kpi-value">3</div>
+    <span class="kpi-badge warn">Requieren atención</span>
+  </div>
+</div>
+
+<!-- MAIN AREA -->
+<div class="main-area">
+
+  <!-- TABLE PANEL -->
+  <div class="table-panel">
+
+    <div class="toolbar">
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input class="search-input" type="text" placeholder="Buscar por empresa, beneficiario o ID…" id="searchInput" oninput="filtrarTabla()"/>
+      </div>
+      <select class="filter-select" id="filterEstado" onchange="filtrarTabla()">
+        <option value="">Todos los estados</option>
+        <option value="Registrada">Registrada</option>
+        <option value="En verificación">En verificación</option>
+        <option value="Pendiente">Pendiente soporte</option>
+        <option value="Rechazada">Rechazada</option>
+      </select>
+      <select class="filter-select" id="filterCategoria" onchange="filtrarTabla()">
+        <option value="">Todas las categorías</option>
+        <option>Materiales de construcción</option>
+        <option>Pintura y acabados</option>
+        <option>Pisos y baldosas</option>
+        <option>Cubierta y tejas</option>
+        <option>Muebles</option>
+        <option>Electrodomésticos</option>
+        <option>Cama y colchón</option>
+        <option>Televisor</option>
+      </select>
+      <button class="btn-export" onclick="showToast('📥','Exportando a Excel…')">📥 Exportar</button>
+    </div>
+
+    <div class="table-card">
+      <table id="donacionesTable">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Empresa donante</th>
+            <th>Beneficiario</th>
+            <th>Materiales principales</th>
+            <th>Fecha</th>
+            <th>Valor estimado</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="tablebody"></tbody>
+      </table>
+      <div class="pagination">
+        <div class="pg-info" id="pgInfo">Mostrando 1–7 de 7 registros</div>
+        <div class="pg-buttons">
+          <button class="pg-btn">◀</button>
+          <button class="pg-btn active">1</button>
+          <button class="pg-btn">2</button>
+          <button class="pg-btn">▶</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FORM PANEL -->
+  <div class="form-panel" id="formPanel">
+    <div class="form-header">
+      <div>
+        <h2>Nueva Donación</h2>
+        <p>Complete los datos para registrar</p>
+      </div>
+      <button class="form-collapse-btn" onclick="cerrarFormulario()">✕</button>
+    </div>
+
+    <div class="form-body">
+
+      <!-- Steps -->
+      <div class="steps-indicator">
+        <div class="step-dot current" id="dot1">1</div>
+        <div class="step-line" id="line1"></div>
+        <div class="step-dot pending" id="dot2">2</div>
+        <div class="step-line" id="line2"></div>
+        <div class="step-dot pending" id="dot3">3</div>
+      </div>
+      <div class="step-label-row">
+        <span class="active" id="lbl1">Partes</span>
+        <span id="lbl2">Materiales</span>
+        <span id="lbl3">Confirmar</span>
+      </div>
+
+      <!-- STEP 1 -->
+      <div id="step1">
+        <div class="field">
+          <label>Empresa donante <span class="req">*</span></label>
+          <select id="fEmpresa">
+            <option value="">— Seleccionar empresa —</option>
+            <option>Materiales del Norte S.A.S. – NIT 900.456.123</option>
+            <option>Ferreterías XYZ Ltda. – NIT 800.123.456</option>
+            <option>Cerámicas TechCorp S.A. – NIT 901.234.567</option>
+            <option>Electrohogar Dist. S.A. – NIT 700.987.654</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Beneficiario (Adulto Mayor) <span class="req">*</span></label>
+          <select id="fBeneficiario">
+            <option value="">— Seleccionar beneficiario —</option>
+            <option>María Inés Torres – ID 25.431.987 (Urgencia: Alta)</option>
+            <option>Jorge Ernesto Ríos – ID 13.887.204 (Urgencia: Media)</option>
+            <option>Lucía Amparo Castaño – ID 41.205.339 (Urgencia: Alta)</option>
+            <option>Pedro Manuel Vargas – ID 7.654.321 (Urgencia: Media)</option>
+            <option>Rosa Elena Muñoz – ID 31.876.543 (Urgencia: Alta)</option>
+          </select>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Fecha de donación <span class="req">*</span></label>
+            <input type="date" id="fFecha" />
+          </div>
+          <div class="field">
+            <label>Modalidad de entrega</label>
+            <select id="fModalidad">
+              <option>Entrega en domicilio</option>
+              <option>Entrega en bodega ONG</option>
+              <option>Entrega con instalación</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label>Observaciones</label>
+          <textarea id="fObs" placeholder="Ej: La empresa aportó transporte para la entrega…"></textarea>
+        </div>
+        <button class="btn-save-form" style="width:100%;margin-top:4px;" onclick="goStep(2)">Siguiente → Materiales</button>
+      </div>
+
+      <!-- STEP 2 -->
+      <div id="step2" style="display:none;">
+
+        <div class="warning-box">
+          <span class="icon">⚠️</span>
+          <span>Solo materiales y elementos físicos para el hogar. No registre efectivo, medicamentos ni ropa.</span>
+        </div>
+
+        <div class="items-header">
+          <label>Materiales donados <span class="req">*</span></label>
+          <button class="btn-add-item" onclick="agregarItem()">+ Agregar</button>
+        </div>
+
+        <div id="itemsContainer">
+          <!-- Items se agregan dinámicamente -->
+        </div>
+
+        <div class="total-row">
+          <span>Valor total estimado</span>
+          <span class="total-val" id="totalVal">$ 0</span>
+        </div>
+
+        <div>
+          <label class="field" style="font-size:12px;font-weight:800;color:var(--navy);display:block;margin-bottom:6px;">Soporte fotográfico (opcional)</label>
+          <div class="upload-zone" ondragover="event.preventDefault()" ondrop="handleDrop(event)">
+            <div class="icon">📎</div>
+            Arrastra archivos aquí o haz clic para seleccionar
+            <small>JPG, PNG, PDF · Máx. 5MB por archivo</small>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:10px;margin-top:4px;">
+          <button class="btn-cancel-form" onclick="goStep(1)">← Volver</button>
+          <button class="btn-save-form" style="flex:2;" onclick="goStep(3)">Siguiente → Confirmar</button>
+        </div>
+      </div>
+
+      <!-- STEP 3 -->
+      <div id="step3" style="display:none;">
+        <div id="resumenContent"></div>
+        <div style="display:flex;gap:10px;margin-top:8px;">
+          <button class="btn-cancel-form" onclick="goStep(2)">← Volver</button>
+          <button class="btn-save-form" style="flex:2;" onclick="guardarDonacion()">✓ Guardar donación</button>
+        </div>
+      </div>
+
+    </div>
+    <!-- form-footer vacío; botones están dentro de cada step -->
+  </div>
+</div>
+
+<!-- MODAL DETALLE -->
+<div class="modal-overlay" id="modalOverlay" onclick="cerrarModal(event)">
+  <div class="modal" id="modalBox">
+    <div class="modal-topbar"></div>
+    <div class="modal-header-inner">
+      <div>
+        <h2 id="modalTitulo">—</h2>
+        <p class="modal-id" id="modalSubtitulo">—</p>
+      </div>
+      <button class="modal-close" onclick="cerrarModalBtn()">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-footer">
+      <button class="btn-cert" onclick="showToast('📄','Generando certificado PDF…')">📄 Descargar certificado</button>
+      <button class="btn-close-modal" onclick="cerrarModalBtn()">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span class="toast-icon" id="toastIcon"></span>
+  <span id="toastMsg"></span>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  Session.requerir(); // redirige a login.html si no hay token
+
+  const rol    = Session.rol();     // "admin" o "empresa"
+  const nombre = Session.nombre();
+
+  // Actualizar el chip del navbar con nombre real y botón de salir
+  document.querySelector(".user-chip").innerHTML = `
+    <div class="user-avatar">${iniciales(nombre)}</div>
+    ${nombre}
+    <span style="margin-left:8px;font-size:11px;color:var(--teal);cursor:pointer"
+          onclick="Auth.logout()">Salir</span>
+  `;
+
+  // Ocultar secciones según rol
+  if (rol === "empresa") {
+    document.querySelectorAll("[data-solo-admin]").forEach(el => el.style.display = "none");
+  }
+});
+
+// ── TABLA ────────────────────────────────────────────────────────────────────
+function estadoClass(e) {
+  if (e==="Registrada")      return "s-registrada";
+  if (e==="En verificación") return "s-verificacion";
+  if (e==="Pendiente")       return "s-pendiente";
+  return "s-rechazada";
+}
+function fmtCOP(v) { return "$" + v.toLocaleString("es-CO"); }
+
+let tabActiva = "todas";
+
+function renderTabla(lista) {
+  const tbody = document.getElementById("tablebody");
+  document.getElementById("pgInfo").textContent = `Mostrando 1–${lista.length} de ${lista.length} registros`;
+  if (!lista.length) {
+    tbody.innerHTML = `<tr><td colspan="8"><div class="empty-state"><div class="icon">📦</div><h3>Sin resultados</h3><p>Ajusta los filtros de búsqueda.</p></div></td></tr>`;
+    return;
+  }
+  tbody.innerHTML = lista.map(d => `
+    <tr onclick="abrirModal('${d.id}')" style="animation:fadeUp .35s ease both;">
+      <td class="td-id">${d.id}</td>
+      <td><div class="td-empresa">${d.empresa}</div></td>
+      <td><div class="td-empresa" style="font-weight:600;">${d.beneficiario}</div></td>
+      <td><div style="font-size:12px;color:var(--gray-4);">${d.materiales}</div></td>
+      <td style="font-size:12px;white-space:nowrap;">${d.fecha}</td>
+      <td class="td-valor">${fmtCOP(d.valor)}</td>
+      <td><span class="status-badge ${estadoClass(d.estado)}">${d.estado}</span></td>
+      <td onclick="event.stopPropagation()">
+        <div class="action-btns">
+          <button class="tbl-btn" onclick="abrirModal('${d.id}')">Ver</button>
+          <button class="tbl-btn" onclick="showToast('📄','Generando certificado…')">PDF</button>
+          <button class="tbl-btn danger" onclick="showToast('🗑️','Eliminado')">✕</button>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function filtrarTabla() {
+  const q  = document.getElementById("searchInput").value.toLowerCase();
+  const es = document.getElementById("filterEstado").value;
+  const cat= document.getElementById("filterCategoria").value;
+  let lista = donaciones.filter(d => {
+    const matchQ  = !q  || d.empresa.toLowerCase().includes(q) || d.beneficiario.toLowerCase().includes(q) || d.id.toLowerCase().includes(q);
+    const matchEs = !es || d.estado === es;
+    const matchTab= tabActiva==="todas" || d.estado.toLowerCase().includes(tabActiva.replace("verificacion","verificación").replace("registrada","Registrada").replace("pendiente","Pendiente"));
+    return matchQ && matchEs && matchTab;
+  });
+  renderTabla(lista);
+}
+
+function cambiarTab(btn, tab) {
+  document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  tabActiva = tab;
+  filtrarTabla();
+}
+
+// ── FORM STEPS ───────────────────────────────────────────────────────────────
+let currentStep = 1;
+let itemCounter = 0;
+
+function goStep(n) {
+  // Validación básica step 1
+  if (n===2 && currentStep===1) {
+    if (!document.getElementById("fEmpresa").value || !document.getElementById("fBeneficiario").value || !document.getElementById("fFecha").value) {
+      showToast("⚠️","Completa empresa, beneficiario y fecha");
+      return;
+    }
+  }
+  // Validación step 2
+  if (n===3 && currentStep===2) {
+    const items = document.querySelectorAll(".item-row");
+    if (!items.length) { showToast("⚠️","Agrega al menos un material"); return; }
+    buildResumen();
+  }
+
+  for (let i=1;i<=3;i++) {
+    const el = document.getElementById("step"+i);
+    if (el) el.style.display = i===n ? "block" : "none";
+  }
+
+  // Dots
+  ["dot1","dot2","dot3"].forEach((id,idx) => {
+    const dot = document.getElementById(id);
+    dot.className = "step-dot";
+    if (idx+1 < n)       dot.classList.add("done");
+    else if (idx+1 === n) dot.classList.add("current");
+    else                  dot.classList.add("pending");
+    dot.textContent = idx+1 < n ? "✓" : idx+1;
+  });
+  ["line1","line2"].forEach((id,idx) => {
+    document.getElementById(id).className = "step-line" + (n>idx+1?" done":"");
+  });
+  ["lbl1","lbl2","lbl3"].forEach((id,idx) => {
+    const el = document.getElementById(id);
+    el.className = idx+1===n ? "active" : "";
+    if (el.classList.contains("active")) el.style.color="var(--teal)";
+    else el.style.color="";
+  });
+
+  currentStep = n;
+}
+
+function agregarItem() {
+  const id = ++itemCounter;
+  const div = document.createElement("div");
+  div.className = "item-row";
+  div.id = "item-"+id;
+  div.innerHTML = `
+    <div class="item-row-top">
+      <select onchange="calcTotal()">
+        <option value="">Categoría…</option>
+        <option>Materiales de construcción</option>
+        <option>Pintura y acabados</option>
+        <option>Pisos y baldosas</option>
+        <option>Cubierta y tejas</option>
+        <option>Muebles</option>
+        <option>Electrodomésticos</option>
+        <option>Cama y colchón</option>
+        <option>Televisor</option>
+        <option>Cocina y comedor</option>
+        <option>Otro</option>
+      </select>
+      <button class="btn-remove-item" onclick="eliminarItem(${id})">✕</button>
+    </div>
+    <input placeholder="Descripción del material o elemento…" style="width:100%;" />
+    <div class="item-row-bottom">
+      <input type="number" placeholder="Cant." min="1" value="1" onchange="calcTotal()" class="item-cant" />
+      <select class="item-und">
+        <option>Unidades</option><option>Bultos</option><option>m²</option>
+        <option>Galones</option><option>Juego</option><option>Metros</option>
+      </select>
+      <input type="number" placeholder="Valor COP" value="0" onchange="calcTotal()" class="item-val" />
+    </div>
+  `;
+  document.getElementById("itemsContainer").appendChild(div);
+  calcTotal();
+}
+
+function eliminarItem(id) {
+  const el = document.getElementById("item-"+id);
+  if (el) el.remove();
+  calcTotal();
+}
+
+function calcTotal() {
+  const vals = document.querySelectorAll(".item-val");
+  let total = 0;
+  vals.forEach(v => total += parseFloat(v.value)||0);
+  document.getElementById("totalVal").textContent = fmtCOP(total);
+}
+
+function buildResumen() {
+  const empresa     = document.getElementById("fEmpresa").value;
+  const beneficiario= document.getElementById("fBeneficiario").value;
+  const fecha       = document.getElementById("fFecha").value;
+  const modalidad   = document.getElementById("fModalidad").value;
+  const obs         = document.getElementById("fObs").value;
+
+  const rows = [...document.querySelectorAll(".item-row")].map(r => {
+    const cat  = r.querySelector("select").value || "—";
+    const desc = r.querySelectorAll("input")[0].value || "—";
+    const cant = r.querySelector(".item-cant").value;
+    const und  = r.querySelector(".item-und").value;
+    const val  = parseFloat(r.querySelector(".item-val").value)||0;
+    return `<tr><td>${cat}</td><td>${desc}</td><td>${cant} ${und}</td><td style="font-weight:700">${fmtCOP(val)}</td></tr>`;
+  }).join('');
+
+  const total = document.getElementById("totalVal").textContent;
+
+  document.getElementById("resumenContent").innerHTML = `
+    <div style="background:var(--navy);border-radius:var(--radius-sm);padding:14px 16px;margin-bottom:14px;color:#fff;">
+      <div style="font-size:11px;color:#AED6F1;font-weight:800;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;">Resumen de la donación</div>
+      <div style="font-size:13px;margin-bottom:3px;"><span style="color:#AED6F1;">Empresa:</span> <b>${empresa||"—"}</b></div>
+      <div style="font-size:13px;margin-bottom:3px;"><span style="color:#AED6F1;">Beneficiario:</span> <b>${beneficiario||"—"}</b></div>
+      <div style="font-size:13px;margin-bottom:3px;"><span style="color:#AED6F1;">Fecha:</span> <b>${fecha}</b></div>
+      <div style="font-size:13px;"><span style="color:#AED6F1;">Modalidad:</span> <b>${modalidad}</b></div>
+    </div>
+    <table style="width:100%;border-collapse:collapse;font-size:12px;margin-bottom:10px;">
+      <thead><tr style="background:var(--gray-1);">
+        <th style="padding:7px 8px;text-align:left;font-size:10px;color:var(--gray-3);text-transform:uppercase;">Categoría</th>
+        <th style="padding:7px 8px;text-align:left;font-size:10px;color:var(--gray-3);text-transform:uppercase;">Descripción</th>
+        <th style="padding:7px 8px;text-align:left;font-size:10px;color:var(--gray-3);text-transform:uppercase;">Cant.</th>
+        <th style="padding:7px 8px;text-align:left;font-size:10px;color:var(--gray-3);text-transform:uppercase;">Valor</th>
+      </tr></thead>
+      <tbody>${rows||'<tr><td colspan="4" style="padding:8px;color:var(--gray-3);">Sin ítems</td></tr>'}</tbody>
+    </table>
+    <div class="total-row"><span>Total estimado</span><span class="total-val">${total}</span></div>
+    ${obs ? `<div style="margin-top:10px;font-size:12px;color:var(--gray-4);background:var(--gray-1);padding:10px 12px;border-radius:6px;"><b>Observaciones:</b> ${obs}</div>`:''}
+  `;
+}
+
+function guardarDonacion() {
+  // En producción: fetch('/donaciones/', {method:'POST', body: JSON.stringify(datos)})
+  showToast("✅","¡Donación guardada exitosamente!");
+  setTimeout(() => {
+    cerrarFormulario();
+    goStep(1);
+    document.getElementById("itemsContainer").innerHTML = "";
+    itemCounter = 0;
+    renderTabla(donaciones);
+  }, 1200);
+}
+
+// ── FORM PANEL OPEN/CLOSE ────────────────────────────────────────────────────
+function abrirFormulario() {
+  const p = document.getElementById("formPanel");
+  p.style.display = "block";
+  // init step 1
+  goStep(1);
+  // seed first item
+  if (!document.querySelectorAll(".item-row").length) agregarItem();
+}
+function cerrarFormulario() {
+  document.getElementById("formPanel").style.display = "none";
+}
+
+// ── MODAL ────────────────────────────────────────────────────────────────────
+function abrirModal(id) {
+  const d = donaciones.find(x => x.id===id);
+  if (!d) return;
+
+  document.getElementById("modalTitulo").textContent = `Donación ${d.id}`;
+  document.getElementById("modalSubtitulo").textContent = `${d.empresa} → ${d.beneficiario} · ${d.fecha}`;
+
+  const itemsRows = d.items.map(it => `
+    <tr>
+      <td style="font-size:12px;color:var(--gray-3);">${it.cat}</td>
+      <td style="font-size:13px;">${it.desc}</td>
+      <td style="font-size:13px;">${it.cant} ${it.und}</td>
+      <td style="font-weight:800;font-size:13px;">${fmtCOP(it.val)}</td>
+    </tr>
+  `).join('');
+
+  document.getElementById("modalBody").innerHTML = `
+    <div class="modal-section">
+      <div class="modal-section-title">Información general</div>
+      <div class="modal-grid">
+        <div class="modal-field"><label>Empresa</label><p>${d.empresa}</p></div>
+        <div class="modal-field"><label>Beneficiario</label><p>${d.beneficiario}</p></div>
+        <div class="modal-field"><label>Fecha</label><p>${d.fecha}</p></div>
+        <div class="modal-field"><label>Modalidad</label><p>${d.modalidad}</p></div>
+        <div class="modal-field"><label>Estado</label><p><span class="status-badge ${estadoClass(d.estado)}">${d.estado}</span></p></div>
+        <div class="modal-field"><label>Observaciones</label><p>${d.obs||"—"}</p></div>
+      </div>
+    </div>
+    <div class="modal-section">
+      <div class="modal-section-title">Materiales donados</div>
+      <table class="modal-items-table">
+        <thead><tr><th>Categoría</th><th>Descripción</th><th>Cantidad</th><th>Valor</th></tr></thead>
+        <tbody>${itemsRows}</tbody>
+      </table>
+      <div class="modal-total-row">
+        <span>Valor total estimado</span>
+        <span>${fmtCOP(d.valor)}</span>
+      </div>
+    </div>
+  `;
+
+  document.getElementById("modalOverlay").classList.add("open");
+  document.body.style.overflow = "hidden";
+}
+
+function cerrarModal(e) { if (e.target===document.getElementById("modalOverlay")) cerrarModalBtn(); }
+function cerrarModalBtn() { document.getElementById("modalOverlay").classList.remove("open"); document.body.style.overflow=""; }
+document.addEventListener("keydown", e => { if (e.key==="Escape") cerrarModalBtn(); });
+
+// ── TOAST ────────────────────────────────────────────────────────────────────
+let toastTimer;
+function showToast(icon, msg) {
+  document.getElementById("toastIcon").textContent = icon;
+  document.getElementById("toastMsg").textContent  = msg;
+  const t = document.getElementById("toast");
+  t.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove("show"), 3000);
+}
+
+// ── DRAG & DROP placeholder ──────────────────────────────────────────────────
+function handleDrop(e) {
+  e.preventDefault();
+  const files = e.dataTransfer.files;
+  if (files.length) showToast("📎", `${files.length} archivo(s) adjunto(s)`);
+}
+
+// ── NAVBAR SEGÚN ROL ──────────────────────────────────────────────────────────
+function construirNavbar() {
+  const rol = Session.rol();
+  const links = document.querySelector(".nav-links");
+
+  if (rol === "empresa") {
+    links.innerHTML = `
+      <a href="index.html">Inicio</a>
+      <a href="adultos.html">Beneficiarios</a>
+      <a href="donaciones.html">Mis Donaciones</a>
+      <a href="certificado.html">Mis Certificados</a>
+    `;
+  } else {
+    links.innerHTML = `
+      <a href="index.html">Inicio</a>
+      <a href="adultos.html">Beneficiarios</a>
+      <a href="donaciones.html">Donaciones</a>
+      <a href="empresas.html">Empresas</a>
+      <a href="reportes.html">Reportes</a>
+      <a href="certificado.html">Certificados</a>
+    `;
+  }
+
+  // Marcar el link activo según la página actual
+  const pagina = window.location.pathname.split("/").pop() || "donaciones.html";
+  links.querySelectorAll("a").forEach(a => {
+    const href = a.getAttribute("href");
+    if (href === pagina || (pagina === "" && href === "donaciones.html")) {
+      a.classList.add("active");
+    } else {
+      a.classList.remove("active");
+    }
+  });
+}
+
+// ── INIT ─────────────────────────────────────────────────────────────────────
+document.addEventListener("DOMContentLoaded", () => {
+  construirNavbar(); // Construir navbar según el rol
+  // Fijar fecha de hoy por defecto
+  document.getElementById("fFecha").valueAsDate = new Date();
+  // Formulario oculto al inicio
+  document.getElementById("formPanel").style.display = "none";
+  // Render tabla inicial
+  renderTabla(donaciones);
+
+  // Verificar si hay beneficiario preseleccionado
+  const presel = localStorage.getItem("beneficiario_preseleccionado");
+  if (presel) {
+    document.getElementById("fBeneficiario").value = presel;
+    localStorage.removeItem("beneficiario_preseleccionado");
+    abrirFormulario(); // abre el formulario directamente
+  }
+});
+
+
+</script>
+<script src="assets/js/api.js"></script>
+</body>
+</html>
+

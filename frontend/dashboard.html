@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard – Financiando Sueños | Unbound</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Merriweather:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --navy:     #1B3A5C;
+      --navy-dk:  #122843;
+      --teal:     #00A99D;
+      --teal-dk:  #007f75;
+      --teal-lt:  #E6F7F6;
+      --gold:     #E8A020;
+      --gold-lt:  #FEF3E2;
+      --green:    #27AE60;
+      --green-lt: #EAFAF1;
+      --red:      #C0392B;
+      --red-lt:   #FDEDEC;
+      --orange:   #E67E22;
+      --orange-lt:#FEF5E7;
+      --purple:   #8E44AD;
+      --purple-lt:#F5EEF8;
+      --bg:       #F4F6F9;
+      --white:    #FFFFFF;
+      --gray-1:   #F0F2F5;
+      --gray-2:   #D8DCE3;
+      --gray-3:   #8C97A8;
+      --gray-4:   #4A5568;
+      --text:     #1C2B3A;
+      --radius:   12px;
+      --radius-sm:8px;
+      --shadow:   0 2px 12px rgba(27,58,92,.09);
+      --shadow-h: 0 8px 28px rgba(27,58,92,.16);
+    }
+
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    html { scroll-behavior: smooth; }
+    body { font-family:'Nunito',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
+    button { cursor:pointer; font-family:inherit; }
+    a { text-decoration:none; }
+
+    /* ── TOPBAR ──────────────────────────────────────── */
+    .topbar {
+      height:5px;
+      background:linear-gradient(90deg,
+        #E84040 0%,#E84040 16.6%,#E8A020 16.6%,#E8A020 33.3%,
+        #F5D020 33.3%,#F5D020 50%,#2BAD60 50%,#2BAD60 66.6%,
+        #00A99D 66.6%,#00A99D 83.3%,#1B3A5C 83.3%,#1B3A5C 100%);
+    }
+
+    /* ── NAVBAR ──────────────────────────────────────── */
+    .navbar {
+      background:var(--white); border-bottom:1px solid var(--gray-2);
+      padding:0 48px; display:flex; align-items:center; gap:32px;
+      height:68px; position:sticky; top:0; z-index:100;
+      box-shadow:0 1px 8px rgba(0,0,0,.06);
+    }
+    .logo { display:flex; align-items:center; gap:10px; flex-shrink:0; }
+    .logo-icon { width:38px; height:38px; background:var(--teal); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:18px; }
+    .logo-text { font-family:'Merriweather',serif; font-size:13px; font-weight:700; color:var(--navy); }
+    .logo-sub  { font-size:10px; color:var(--teal); font-weight:700; letter-spacing:1.5px; text-transform:uppercase; }
+    .nav-links { display:flex; gap:4px; }
+    .nav-links a { font-size:14px; font-weight:700; color:var(--navy); padding:6px 14px; border-radius:6px; transition:background .2s,color .2s; }
+    .nav-links a:hover { background:var(--gray-1); color:var(--teal); }
+    .nav-links a.active { color:var(--teal); }
+    .nav-right { margin-left:auto; display:flex; align-items:center; gap:12px; }
+    .nav-icon-btn { width:36px; height:36px; border-radius:8px; border:1.5px solid var(--gray-2); background:transparent; display:flex; align-items:center; justify-content:center; font-size:16px; color:var(--navy); transition:border-color .2s; }
+    .nav-icon-btn:hover { border-color:var(--teal); background:var(--gray-1); }
+    .user-chip { display:flex; align-items:center; gap:8px; background:var(--gray-1); border-radius:20px; padding:4px 14px 4px 4px; font-size:13px; font-weight:700; color:var(--navy); }
+    .user-avatar { width:28px; height:28px; border-radius:50%; background:var(--teal); color:#fff; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:800; }
+    .logout-btn { font-size:11px; color:var(--teal); background:none; border:none; font-weight:700; margin-left:4px; padding:0; }
+    .logout-btn:hover { color:var(--teal-dk); }
+
+    /* ── WELCOME BANNER ──────────────────────────────── */
+    .welcome-banner {
+      background:var(--navy);
+      padding:32px 48px;
+      display:flex; align-items:center; justify-content:space-between;
+      position:relative; overflow:hidden;
+    }
+    .welcome-banner::before {
+      content:'';
+      position:absolute; width:320px; height:320px; border-radius:50%;
+      border:50px solid rgba(0,169,157,.12);
+      top:-100px; right:180px; pointer-events:none;
+    }
+    .welcome-banner::after {
+      content:'';
+      position:absolute; width:200px; height:200px; border-radius:50%;
+      border:30px solid rgba(255,255,255,.04);
+      bottom:-60px; right:60px; pointer-events:none;
+    }
+    .welcome-left { position:relative; z-index:1; }
+    .welcome-greeting { font-size:13px; font-weight:700; color:rgba(255,255,255,.5); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px; }
+    .welcome-name { font-family:'Merriweather',serif; font-size:26px; font-weight:700; color:#fff; margin-bottom:6px; }
+    .welcome-name span { color:var(--teal); }
+    .welcome-sub  { font-size:14px; color:rgba(255,255,255,.6); }
+    .welcome-date { font-size:12px; color:rgba(255,255,255,.35); margin-top:8px; }
+
+    .welcome-right { display:flex; gap:16px; position:relative; z-index:1; }
+    .welcome-action {
+      display:flex; flex-direction:column; align-items:center; gap:6px;
+      background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12);
+      border-radius:var(--radius); padding:16px 20px;
+      color:#fff; font-size:12px; font-weight:800;
+      text-align:center; transition:background .2s;
+      min-width:100px;
+    }
+    .welcome-action:hover { background:rgba(255,255,255,.15); }
+    .welcome-action .wa-icon { font-size:24px; }
+
+    /* ── MAIN CONTENT ────────────────────────────────── */
+    .content { padding:28px 48px 56px; }
+
+    /* ── SECTION LABEL ───────────────────────────────── */
+    .sec-label {
+      font-size:11px; font-weight:800; text-transform:uppercase;
+      letter-spacing:1px; color:var(--gray-3); margin-bottom:16px;
+      display:flex; align-items:center; gap:10px;
+    }
+    .sec-label::after { content:''; flex:1; height:1px; background:var(--gray-2); }
+
+    /* ── KPI GRID ────────────────────────────────────── */
+    .kpi-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:28px; }
+    .kpi-card {
+      background:var(--white); border:1px solid var(--gray-2);
+      border-radius:var(--radius); padding:20px 22px;
+      box-shadow:var(--shadow); position:relative; overflow:hidden;
+      animation:fadeUp .45s ease both;
+    }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+    .kpi-card:nth-child(1){animation-delay:.06s}
+    .kpi-card:nth-child(2){animation-delay:.12s}
+    .kpi-card:nth-child(3){animation-delay:.18s}
+    .kpi-card:nth-child(4){animation-delay:.24s}
+    .kpi-accent { position:absolute; top:0; left:0; right:0; height:4px; border-radius:var(--radius) var(--radius) 0 0; }
+    .kpi-icon  { font-size:26px; margin-bottom:8px; }
+    .kpi-label { font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.8px; color:var(--gray-3); margin-bottom:4px; }
+    .kpi-value { font-family:'Merriweather',serif; font-size:32px; font-weight:700; color:var(--navy); line-height:1; margin-bottom:6px; }
+    .kpi-value.sm { font-size:22px; }
+    .kpi-delta { display:inline-flex; align-items:center; gap:4px; border-radius:20px; padding:3px 10px; font-size:11px; font-weight:800; }
+    .d-up   { background:var(--green-lt); color:var(--green); }
+    .d-info { background:var(--teal-lt);  color:var(--teal-dk); }
+    .d-warn { background:var(--orange-lt);color:var(--orange); }
+    .d-purple { background:var(--purple-lt);color:var(--purple); }
+
+    /* ── CHARTS ROW ──────────────────────────────────── */
+    .row-2 { display:grid; grid-template-columns:2fr 1fr; gap:20px; margin-bottom:24px; }
+    .row-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:20px; margin-bottom:24px; }
+    .row-half { display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-bottom:24px; }
+
+    .card {
+      background:var(--white); border:1px solid var(--gray-2);
+      border-radius:var(--radius); box-shadow:var(--shadow);
+      animation:fadeUp .45s ease .25s both;
+    }
+    .card-header { padding:18px 22px 0; display:flex; justify-content:space-between; align-items:flex-start; }
+    .card-title  { font-family:'Merriweather',serif; font-size:15px; font-weight:700; color:var(--navy); }
+    .card-sub    { font-size:12px; color:var(--gray-3); margin-top:2px; }
+    .card-badge  { background:var(--teal-lt); color:var(--teal-dk); border-radius:20px; padding:4px 12px; font-size:11px; font-weight:800; white-space:nowrap; }
+    .card-body   { padding:16px 22px 20px; }
+
+    /* ── RECENT ACTIVITY ─────────────────────────────── */
+    .activity-list { display:flex; flex-direction:column; gap:0; }
+    .activity-item {
+      display:flex; align-items:flex-start; gap:14px;
+      padding:12px 0; border-bottom:1px solid var(--gray-1);
+    }
+    .activity-item:last-child { border-bottom:none; }
+    .act-dot-wrap { display:flex; flex-direction:column; align-items:center; padding-top:3px; }
+    .act-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+    .act-line { width:2px; flex:1; background:var(--gray-1); margin-top:4px; min-height:20px; }
+    .activity-item:last-child .act-line { display:none; }
+    .act-info { flex:1; }
+    .act-title { font-size:13px; font-weight:700; color:var(--text); line-height:1.4; }
+    .act-desc  { font-size:12px; color:var(--gray-3); margin-top:2px; }
+    .act-time  { font-size:11px; color:var(--gray-3); white-space:nowrap; margin-top:1px; }
+    .act-val   { font-size:13px; font-weight:800; color:var(--navy); white-space:nowrap; }
+
+    /* ── QUICK ACTIONS ───────────────────────────────── */
+    .quick-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    .quick-btn {
+      display:flex; align-items:center; gap:10px;
+      background:var(--gray-1); border:1.5px solid transparent;
+      border-radius:var(--radius-sm); padding:14px 16px;
+      font-size:13px; font-weight:700; color:var(--navy);
+      transition:all .2s; text-align:left;
+    }
+    .quick-btn:hover { border-color:var(--teal); background:var(--teal-lt); color:var(--teal-dk); }
+    .quick-btn .qb-icon { font-size:22px; flex-shrink:0; }
+    .quick-btn .qb-label { font-size:13px; font-weight:800; color:var(--navy); }
+    .quick-btn .qb-sub   { font-size:11px; color:var(--gray-3); margin-top:1px; }
+    .quick-btn:hover .qb-label { color:var(--teal-dk); }
+
+    /* ── URGENCY LIST ────────────────────────────────── */
+    .urgency-list { display:flex; flex-direction:column; gap:8px; }
+    .urg-item { display:flex; align-items:center; gap:12px; padding:10px 12px; background:var(--gray-1); border-radius:var(--radius-sm); transition:background .2s; cursor:pointer; }
+    .urg-item:hover { background:var(--teal-lt); }
+    .urg-avatar { width:38px; height:38px; border-radius:50%; background:var(--navy); color:#fff; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:800; flex-shrink:0; }
+    .urg-info { flex:1; min-width:0; }
+    .urg-name { font-size:13px; font-weight:700; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .urg-desc { font-size:11px; color:var(--gray-3); margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .urg-badge { border-radius:20px; padding:3px 9px; font-size:10px; font-weight:800; flex-shrink:0; }
+    .ub-high { background:var(--red-lt); color:var(--red); }
+    .ub-med  { background:var(--gold-lt); color:#9A7D0A; }
+
+    /* ── TOP EMPRESAS (admin) ────────────────────────── */
+    .top-list { display:flex; flex-direction:column; gap:12px; }
+    .top-row  { display:flex; align-items:center; gap:12px; }
+    .top-rank { width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:800; color:#fff; flex-shrink:0; }
+    .rank-1 { background:var(--gold); }
+    .rank-2 { background:var(--gray-3); }
+    .rank-3 { background:#cd7f32; }
+    .rank-n { background:var(--navy); }
+    .top-name { flex:1; font-size:13px; font-weight:700; color:var(--navy); min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .top-bar-wrap { width:80px; height:6px; background:var(--gray-1); border-radius:3px; flex-shrink:0; }
+    .top-bar { height:6px; border-radius:3px; background:var(--teal); }
+    .top-val { font-size:12px; font-weight:800; color:var(--navy); white-space:nowrap; width:56px; text-align:right; flex-shrink:0; }
+
+    /* ── EMPRESA: MIS DONACIONES RECIENTES ───────────── */
+    .don-table { width:100%; border-collapse:collapse; font-size:13px; }
+    .don-table thead th { background:var(--navy); color:#fff; padding:10px 14px; text-align:left; font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.5px; }
+    .don-table tbody tr { border-bottom:1px solid var(--gray-1); transition:background .15s; cursor:pointer; }
+    .don-table tbody tr:last-child { border-bottom:none; }
+    .don-table tbody tr:hover { background:#F7FFFE; }
+    .don-table tbody td { padding:11px 14px; }
+    .td-folio { font-weight:800; color:var(--teal-dk); font-size:11px; }
+    .td-main  { font-weight:700; color:var(--navy); }
+    .td-val   { font-weight:800; color:var(--navy); }
+    .status-badge { display:inline-flex; align-items:center; gap:5px; border-radius:20px; padding:3px 10px; font-size:11px; font-weight:800; }
+    .status-badge::before { content:''; width:6px; height:6px; border-radius:50%; }
+    .s-reg { background:var(--green-lt); color:var(--green); } .s-reg::before { background:var(--green); }
+    .s-ver { background:var(--gold-lt);  color:#9A7D0A; }      .s-ver::before { background:var(--gold); }
+    .s-pen { background:var(--orange-lt);color:var(--orange); } .s-pen::before { background:var(--orange); }
+
+    /* ── EMPRESA: PROGRESO DE IMPACTO ────────────────── */
+    .impact-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    .impact-item { background:var(--gray-1); border-radius:var(--radius-sm); padding:14px 16px; }
+    .impact-label { font-size:11px; font-weight:800; color:var(--gray-3); text-transform:uppercase; letter-spacing:.6px; margin-bottom:4px; }
+    .impact-value { font-family:'Merriweather',serif; font-size:22px; font-weight:700; color:var(--navy); margin-bottom:6px; }
+    .impact-bar-wrap { height:6px; background:var(--gray-2); border-radius:3px; }
+    .impact-bar { height:6px; border-radius:3px; transition:width 1s ease; }
+
+    /* ── CERTIFICADOS RECIENTES (empresa) ────────────── */
+    .cert-list { display:flex; flex-direction:column; gap:8px; }
+    .cert-item { display:flex; align-items:center; gap:12px; padding:10px 12px; background:var(--gray-1); border-radius:var(--radius-sm); transition:background .2s; }
+    .cert-item:hover { background:var(--teal-lt); }
+    .cert-icon { width:36px; height:36px; background:var(--navy); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; }
+    .cert-info { flex:1; min-width:0; }
+    .cert-folio { font-size:12px; font-weight:800; color:var(--teal-dk); }
+    .cert-desc  { font-size:11px; color:var(--gray-3); margin-top:1px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .btn-dl-sm { background:var(--teal); color:#fff; border:none; border-radius:6px; padding:6px 12px; font-size:11px; font-weight:800; white-space:nowrap; transition:background .2s; }
+    .btn-dl-sm:hover { background:var(--teal-dk); }
+
+    /* ── ALERTA PENDIENTES ───────────────────────────── */
+    .alert-card {
+      background:var(--orange-lt); border:1px solid #F5CBA7;
+      border-radius:var(--radius); padding:16px 20px;
+      display:flex; align-items:center; gap:14px; margin-bottom:24px;
+      animation:fadeUp .4s ease both;
+    }
+    .alert-card .al-icon { font-size:24px; flex-shrink:0; }
+    .alert-card .al-text { flex:1; }
+    .alert-card .al-title { font-size:14px; font-weight:800; color:var(--orange); }
+    .alert-card .al-sub   { font-size:13px; color:var(--gray-4); margin-top:2px; }
+    .btn-alert { background:var(--orange); color:#fff; border:none; border-radius:var(--radius-sm); padding:8px 18px; font-size:13px; font-weight:800; white-space:nowrap; transition:background .2s; }
+    .btn-alert:hover { background:#d35400; }
+
+    /* ── TOAST ───────────────────────────────────────── */
+    .toast { position:fixed; bottom:28px; right:28px; background:var(--navy); color:#fff; padding:12px 20px; border-radius:10px; font-size:14px; font-weight:700; box-shadow:0 8px 24px rgba(0,0,0,.2); transform:translateY(80px); opacity:0; transition:all .3s ease; z-index:300; display:flex; align-items:center; gap:8px; }
+    .toast.show { transform:translateY(0); opacity:1; }
+
+    /* ── SKELETON LOADER ─────────────────────────────── */
+    .skeleton { background:linear-gradient(90deg,var(--gray-1) 25%,var(--gray-2) 50%,var(--gray-1) 75%); background-size:200% 100%; animation:shimmer 1.4s infinite; border-radius:6px; }
+    @keyframes shimmer { to { background-position:-200% 0; } }
+  </style>
+</head>
+<body>
+
+<div class="topbar"></div>
+
+<!-- NAVBAR (se construye dinámicamente según rol) -->
+<nav class="navbar">
+  <div class="logo">
+    <div class="logo-icon">🏠</div>
+    <div>
+      <div class="logo-text">Financiando Sueños</div>
+      <div class="logo-sub">Unbound Colombia</div>
+    </div>
+  </div>
+  <div class="nav-links" id="navLinks"></div>
+  <div class="nav-right">
+    <button class="nav-icon-btn" id="btnNotif" title="Notificaciones">🔔</button>
+    <div class="user-chip" id="userChip">
+      <div class="user-avatar" id="userAvatar">…</div>
+      <span id="userName">Cargando…</span>
+      <button class="logout-btn" onclick="cerrarSesion()">Salir</button>
+    </div>
+  </div>
+</nav>
+
+<!-- WELCOME BANNER (se rellena dinámicamente) -->
+<div class="welcome-banner" id="welcomeBanner">
+  <div class="welcome-left">
+    <div class="welcome-greeting" id="greeting">Bienvenido</div>
+    <div class="welcome-name" id="welcomeName"><span>…</span></div>
+    <div class="welcome-sub"  id="welcomeSub">Cargando panel…</div>
+    <div class="welcome-date" id="welcomeDate"></div>
+  </div>
+  <div class="welcome-right" id="welcomeActions"></div>
+</div>
+
+<!-- MAIN CONTENT (se inyecta según rol) -->
+<div class="content" id="mainContent">
+  <!-- Skeleton de carga -->
+  <div class="kpi-grid">
+    <div class="kpi-card" style="height:120px;"><div class="skeleton" style="height:100%;border-radius:var(--radius);"></div></div>
+    <div class="kpi-card" style="height:120px;"><div class="skeleton" style="height:100%;border-radius:var(--radius);"></div></div>
+    <div class="kpi-card" style="height:120px;"><div class="skeleton" style="height:100%;border-radius:var(--radius);"></div></div>
+    <div class="kpi-card" style="height:120px;"><div class="skeleton" style="height:100%;border-radius:var(--radius);"></div></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span id="toastIcon"></span>
+  <span id="toastMsg"></span>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════════════════════════
+// SIMULACIÓN DE SESIÓN
+// En producción esto viene de api.js (Session.rol(), Session.nombre(), etc.)
+// ══════════════════════════════════════════════════════════════════════════════
+const SESSION = {
+  // ── CAMBIA ESTE VALOR PARA PROBAR LOS DOS ROLES ──
+  // "admin"   → vista del administrador Unbound
+  // "empresa" → vista de la empresa donante
+  rol:    localStorage.getItem("fs_rol")    || "admin",
+  nombre: localStorage.getItem("fs_nombre") || "Administrador Unbound",
+  correo: localStorage.getItem("fs_correo") || "admin@unbound.org.co",
+};
+
+// ── HELPERS ───────────────────────────────────────────────────────────────────
+function fmtCOP(v) { return "$" + Number(v).toLocaleString("es-CO"); }
+function initials(n="") { return n.split(" ").filter(Boolean).slice(0,2).map(x=>x[0]).join("").toUpperCase(); }
+function estadoClass(e) {
+  if (e==="Registrada")      return "s-reg";
+  if (e==="En verificación") return "s-ver";
+  return "s-pen";
+}
+
+// ── FECHA ─────────────────────────────────────────────────────────────────────
+function fechaHoy() {
+  const d = new Date();
+  const dias   = ["domingo","lunes","martes","miércoles","jueves","viernes","sábado"];
+  const meses  = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+  return `${dias[d.getDay()]}, ${d.getDate()} de ${meses[d.getMonth()]} de ${d.getFullYear()}`;
+}
+
+// ── KPI HTML ──────────────────────────────────────────────────────────────────
+function kpiHTML(kpis) {
+  return `<div class="kpi-grid">
+    ${kpis.map(k => `
+      <div class="kpi-card">
+        <div class="kpi-accent" style="background:${k.color};"></div>
+        <div class="kpi-icon">${k.icon}</div>
+        <div class="kpi-label">${k.label}</div>
+        <div class="kpi-value ${k.value.length > 6 ? 'sm' : ''}">${k.value}</div>
+        <span class="kpi-delta ${k.cls}">${k.delta}</span>
+      </div>
+    `).join("")}
+  </div>`;
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// RENDER ADMIN
+// ══════════════════════════════════════════════════════════════════════════════
+function renderAdmin() {
+  const d = DEMO.admin;
+
+  // Navbar
+  document.getElementById("navLinks").innerHTML = `
+    <a href="dashboard.html" class="active">Inicio</a>
+    <a href="adultos.html">Beneficiarios</a>
+    <a href="donaciones.html">Donaciones</a>
+    <a href="empresas.html">Empresas</a>
+    <a href="reportes.html">Reportes</a>
+    <a href="certificado.html">Certificados</a>
+  `;
+
+  // Welcome
+  document.getElementById("greeting").textContent    = "Panel de administración";
+  document.getElementById("welcomeName").innerHTML   = `Bienvenido, <span>${SESSION.nombre.split(" ")[0]}</span>`;
+  document.getElementById("welcomeSub").textContent  = "Aquí tienes el resumen general de Financiando Sueños";
+  document.getElementById("welcomeDate").textContent = fechaHoy();
+  document.getElementById("welcomeActions").innerHTML = `
+    <a href="adultos.html" class="welcome-action"><div class="wa-icon">👤</div>Nuevo beneficiario</a>
+    <a href="donaciones.html" class="welcome-action"><div class="wa-icon">📦</div>Nueva donación</a>
+    <a href="reportes.html" class="welcome-action"><div class="wa-icon">📊</div>Ver reportes</a>
+  `;
+
+  // Alerta pendientes
+  const alertHTML = d.pendientes > 0 ? `
+    <div class="alert-card">
+      <div class="al-icon">⚠️</div>
+      <div class="al-text">
+        <div class="al-title">${d.pendientes} donaciones requieren atención</div>
+        <div class="al-sub">Tienen soporte fotográfico pendiente o están en proceso de verificación.</div>
+      </div>
+      <a href="donaciones.html"><button class="btn-alert">Revisar ahora</button></a>
+    </div>
+  ` : "";
+
+  // Actividad reciente
+  const actHTML = `
+    <div class="card">
+      <div class="card-header">
+        <div><div class="card-title">Actividad reciente</div><div class="card-sub">Últimas acciones en el sistema</div></div>
+        <a href="donaciones.html"><span class="card-badge">Ver todas →</span></a>
+      </div>
+      <div class="card-body">
+        <div class="activity-list">
+          ${d.actividad.map(a => `
+            <div class="activity-item">
+              <div class="act-dot-wrap">
+                <div class="act-dot" style="background:${a.dot};"></div>
+                <div class="act-line"></div>
+              </div>
+              <div class="act-info">
+                <div class="act-title">${a.titulo}</div>
+                <div class="act-desc">${a.desc}</div>
+              </div>
+              <div style="text-align:right;">
+                ${a.val ? `<div class="act-val">${fmtCOP(a.val.replace(/[$.,]/g,""))}</div>` : ""}
+                <div class="act-time">${a.time}</div>
+              </div>
+            </div>
+          `).join("")}
+        </div>
+      </div>
+    </div>
+  `;
+
+  // Top empresas
+  const topHTML = `
+    <div class="card">
+      <div class="card-header">
+        <div><div class="card-title">Top empresas donantes</div><div class="card-sub">Por valor acumulado</div></div>
+      </div>
+      <div class="card-body">
+        <div class="top-list">
+          ${d.topEmpresas.map((e,i) => `
+            <div class="top-row">
+              <div class="top-rank rank-${i < 3 ? i+1 : 'n'}">${i+1}</div>
+              <div class="top-name">${e.nombre.split(" ").slice(0,3).join(" ")}</div>
+              <div class="top-bar-wrap"><div class="top-bar" style="width:${e.pct}%;"></div></div>
+              <div class="top-val">$${e.valor}M</div>
+            </div>
+          `).join("")}
+        </div>
+      </div>
+    </div>
+  `;
+
+  // Acciones rápidas
+  const quickHTML = `
+    <div class="card">
+      <div class="card-header"><div><div class="card-title">Acciones rápidas</div></div></div>
+      <div class="card-body">
+        <div class="quick-grid">
+          <a href="adultos.html"><button class="quick-btn"><div class="qb-icon">👤</div><div><div class="qb-label">Nuevo beneficiario</div><div class="qb-sub">Registrar adulto mayor</div></div></button></a>
+          <a href="donaciones.html"><button class="quick-btn"><div class="qb-icon">📦</div><div><div class="qb-label">Nueva donación</div><div class="qb-sub">Registrar materiales</div></div></button></a>
+          <a href="empresas.html"><button class="quick-btn"><div class="qb-icon">🏢</div><div><div class="qb-label">Nueva empresa</div><div class="qb-sub">Vincular donante</div></div></button></a>
+          <a href="reportes.html"><button class="quick-btn"><div class="qb-icon">📊</div><div><div class="qb-label">Ver reportes</div><div class="qb-sub">Estadísticas del período</div></div></button></a>
+          <a href="certificado.html"><button class="quick-btn"><div class="qb-icon">📄</div><div><div class="qb-label">Certificados</div><div class="qb-sub">Generar y descargar</div></div></button></a>
+          <button class="quick-btn" onclick="showToast('📤','Exportando reporte…')"><div class="qb-icon">📤</div><div><div class="qb-label">Exportar datos</div><div class="qb-sub">Excel del período</div></div></button>
+        </div>
+      </div>
+    </div>
+  `;
+
+  // Beneficiarios urgentes
+  const urgHTML = `
+    <div class="card">
+      <div class="card-header">
+        <div><div class="card-title">Beneficiarios urgentes</div><div class="card-sub">Requieren donación prioritaria</div></div>
+        <a href="adultos.html"><span class="card-badge">Ver todos →</span></a>
+      </div>
+      <div class="card-body">
+        <div class="urgency-list">
+          ${d.urgentes.map(u => `
+            <div class="urg-item" onclick="window.location.href='adultos.html'">
+              <div class="urg-avatar">${initials(u.nombre)}</div>
+              <div class="urg-info">
+                <div class="urg-name">${u.nombre}</div>
+                <div class="urg-desc">📍 ${u.ciudad} · ${u.mat}</div>
+              </div>
+              <span class="urg-badge ${u.urgencia==='Alta'?'ub-high':'ub-med'}">${u.urgencia}</span>
+            </div>
+          `).join("")}
+        </div>
+      </div>
+    </div>
+  `;
+
+  // Gráfica mini
+  const chartHTML = `
+    <div class="card">
+      <div class="card-header">
+        <div><div class="card-title">Donaciones por mes</div><div class="card-sub">Valor en COP millones – 2026</div></div>
+      </div>
+      <div class="card-body">
+        <canvas id="chartMini" height="120"></canvas>
+      </div>
+    </div>
+  `;
+
+  document.getElementById("mainContent").innerHTML = `
+    ${alertHTML}
+    <div class="sec-label">Indicadores del período</div>
+    ${kpiHTML(d.kpis)}
+    <div class="sec-label">Visión general</div>
+    <div class="row-2">${actHTML}${topHTML}</div>
+    <div class="sec-label">Gestión y análisis</div>
+    <div class="row-2">${quickHTML}${urgHTML}</div>
+  `;
+
+  // Gráfica mini inline en actividad no tiene canvas; construir gráfica en reportes
+  // Para el dashboard se puede agregar chart en un card extra:
+  setTimeout(() => {
+    const ctx = document.getElementById("chartMini");
+    if (ctx) {
+      Chart.defaults.font.family = "'Nunito', sans-serif";
+      new Chart(ctx, {
+        type:"bar",
+        data:{
+          labels: d.meses,
+          datasets:[
+            { label:"Valor ($M)", data:d.valoresMes, backgroundColor:"rgba(0,169,157,.2)", borderColor:"#00A99D", borderWidth:2, borderRadius:6, yAxisID:"y" },
+            { label:"Donaciones", data:d.cantMes, type:"line", borderColor:"#1B3A5C", backgroundColor:"transparent", borderWidth:2.5, pointBackgroundColor:"#1B3A5C", pointRadius:4, tension:.4, yAxisID:"y2" }
+          ]
+        },
+        options:{
+          responsive:true,
+          plugins:{ legend:{ display:false } },
+          scales:{
+            y:  { position:"left",  grid:{ color:"#F0F2F5" }, ticks:{ callback:v=>"$"+v+"M" } },
+            y2: { position:"right", grid:{ display:false }, ticks:{ stepSize:5 } }
+          }
+        }
+      });
+    }
+  }, 100);
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// RENDER EMPRESA
+// ══════════════════════════════════════════════════════════════════════════════
+function renderEmpresa() {
+  const d = DEMO.empresa;
+
+  // Navbar reducido
+  document.getElementById("navLinks").innerHTML = `
+    <a href="dashboard.html" class="active">Inicio</a>
+    <a href="adultos.html">Beneficiarios</a>
+    <a href="donaciones.html">Mis Donaciones</a>
+    <a href="certificado.html">Mis Certificados</a>
+  `;
+
+  // Welcome personalizado
+  const nombreCorto = SESSION.nombre.split(" ")[0];
+  document.getElementById("greeting").textContent    = `Bienvenido, ${d.razon}`;
+  document.getElementById("welcomeName").innerHTML   = `Hola de nuevo, <span>${nombreCorto}</span>`;
+  document.getElementById("welcomeSub").textContent  = "Aquí está el resumen de tu impacto en el programa";
+  document.getElementById("welcomeDate").textContent = fechaHoy();
+  document.getElementById("welcomeActions").innerHTML = `
+    <a href="adultos.html" class="welcome-action"><div class="wa-icon">🏠</div>Donar materiales</a>
+    <a href="donaciones.html" class="welcome-action"><div class="wa-icon">📦</div>Mis donaciones</a>
+    <a href="certificado.html" class="welcome-action"><div class="wa-icon">📄</div>Mis certificados</a>
+  `;
+
+  // Mis donaciones recientes
+  const donHTML = `
+    <div class="card">
+      <div class="card-header">
+        <div><div class="card-title">Mis donaciones recientes</div><div class="card-sub">Historial de materiales entregados</div></div>
+        <a href="donaciones.html"><span class="card-badge">Ver todas →</span></a>
+      </div>
+      <div class="card-body" style="padding:0 0 4px;">
+        <table class="don-table">
+          <thead><tr><th>Folio</th><th>Beneficiario</th><th>Materiales</th><th>Fecha</th><th>Valor</th><th>Estado</th></tr></thead>
+          <tbody>
+            ${d.misDonaciones.map(don => `
+              <tr onclick="window.location.href='donaciones.html'">
+                <td class="td-folio">${don.folio}</td>
+                <td class="td-main">${don.beneficiario}</td>
+                <td style="font-size:12px;color:var(--gray-4);">${don.mat}</td>
+                <td style="font-size:12px;white-space:nowrap;">${don.fecha}</td>
+                <td class="td-val">${fmtCOP(don.valor)}</td>
+                <td><span class="status-badge ${estadoClass(don.estado)}">${don.estado}</span></td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+
+  // Impacto por categoría
+  const impactoHTML = `
+    <div class="card">
+      <div class="card-header"><div><div class="card-title">Mi impacto por categoría</div><div class="card-sub">Distribución de materiales donados</div></div></div>
+      <div class="card-body">
+        <div class="impact-grid">
+          ${d.impacto.map(im => `
+            <div class="impact-item">
+              <div class="impact-label">${im.label}</div>
+              <div class="impact-value">${im.valor} <span style="font-size:13px;color:var(--gray-3);font-family:'Nunito',sans-serif;font-weight:600;">ítems</span></div>
+              <div class="impact-bar-wrap">
+                <div class="impact-bar" style="width:${im.pct}%;background:${im.color};"></div>
+              </div>
+            </div>
+          `).join("")}
+        </div>
+      </div>
+    </div>
+  `;
+
+  // Certificados recientes
+  const certHTML = `
+    <div class="card">
+      <div class="card-header">
+        <div><div class="card-title">Mis certificados</div><div class="card-sub">Disponibles para descarga</div></div>
+        <a href="certificado.html"><span class="card-badge">Ver todos →</span></a>
+      </div>
+      <div class="card-body">
+        <div class="cert-list">
+          ${d.certificados.map(c => `
+            <div class="cert-item">
+              <div class="cert-icon">📄</div>
+              <div class="cert-info">
+                <div class="cert-folio">${c.folio} · ${c.fecha}</div>
+                <div class="cert-desc">${c.desc}</div>
+              </div>
+              <button class="btn-dl-sm" onclick="showToast('📄','Descargando ${c.folio}…')">Descargar</button>
+            </div>
+          `).join("")}
+        </div>
+      </div>
+    </div>
+  `;
+
+  // Beneficiarios a los que puede donar
+  const urgHTML = `
+    <div class="card">
+      <div class="card-header">
+        <div><div class="card-title">Beneficiarios que necesitan ayuda</div><div class="card-sub">Puedes donar materiales directamente</div></div>
+        <a href="adultos.html"><span class="card-badge">Ver todos →</span></a>
+      </div>
+      <div class="card-body">
+        <div class="urgency-list">
+          ${d.urgentes.map(u => `
+            <div class="urg-item">
+              <div class="urg-avatar">${initials(u.nombre)}</div>
+              <div class="urg-info">
+                <div class="urg-name">${u.nombre}</div>
+                <div class="urg-desc">📍 ${u.ciudad} · ${u.mat}</div>
+              </div>
+              <a href="adultos.html"><button style="background:var(--teal);color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:11px;font-weight:800;">Donar</button></a>
+            </div>
+          `).join("")}
+        </div>
+      </div>
+    </div>
+  `;
+
+  // Acciones rápidas empresa
+  const quickHTML = `
+    <div class="card">
+      <div class="card-header"><div><div class="card-title">¿Qué quieres hacer?</div></div></div>
+      <div class="card-body">
+        <div class="quick-grid">
+          <a href="adultos.html"><button class="quick-btn"><div class="qb-icon">🏠</div><div><div class="qb-label">Donar materiales</div><div class="qb-sub">Elige un beneficiario</div></div></button></a>
+          <a href="donaciones.html"><button class="quick-btn"><div class="qb-icon">📦</div><div><div class="qb-label">Mis donaciones</div><div class="qb-sub">Ver historial completo</div></div></button></a>
+          <a href="certificado.html"><button class="quick-btn"><div class="qb-icon">📄</div><div><div class="qb-label">Descargar certificado</div><div class="qb-sub">Soporte tributario</div></div></button></a>
+          <button class="quick-btn" onclick="showToast('✉️','Abriendo formulario de contacto…')"><div class="qb-icon">✉️</div><div><div class="qb-label">Contactar a Unbound</div><div class="qb-sub">Resolver dudas</div></div></button>
+        </div>
+      </div>
+    </div>
+  `;
+
+  document.getElementById("mainContent").innerHTML = `
+    <div class="sec-label">Mi resumen de impacto</div>
+    ${kpiHTML(d.kpis)}
+    <div class="sec-label">Actividad reciente</div>
+    ${donHTML}
+    <div class="sec-label">Mi impacto y certificados</div>
+    <div class="row-half">${impactoHTML}${certHTML}</div>
+    <div class="sec-label">Acciones y beneficiarios</div>
+    <div class="row-half">${quickHTML}${urgHTML}</div>
+  `;
+}
+
+// ── TOAST ─────────────────────────────────────────────────────────────────────
+let toastTimer;
+function showToast(icon, msg) {
+  document.getElementById("toastIcon").textContent = icon;
+  document.getElementById("toastMsg").textContent  = msg;
+  const t = document.getElementById("toast");
+  t.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove("show"), 3000);
+}
+
+function cerrarSesion() {
+  localStorage.clear();
+  window.location.href = "login.html";
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+document.addEventListener("DOMContentLoaded", () => {
+
+  
+
+  const rol    = SESSION.rol;
+  const nombre = SESSION.nombre;
+
+  // Actualizar chip de usuario
+  document.getElementById("userAvatar").textContent = initials(nombre);
+  document.getElementById("userName").textContent   = nombre.split(" ").slice(0,2).join(" ");
+
+  // Renderizar según rol
+  if (rol === "admin") {
+    renderAdmin();
+  } else {
+    renderEmpresa();
+  }
+
+
+});
+</script>
+<script src="assets/js/api.js"></script>
+</body>
+</html>

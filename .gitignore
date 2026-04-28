@@ -1,0 +1,25 @@
+# Entorno virtual
+venv/
+env/
+.env
+
+# Base de datos (contiene datos reales)
+*.db
+*.sqlite
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# VS Code
+.vscode/
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
