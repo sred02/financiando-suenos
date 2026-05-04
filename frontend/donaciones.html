@@ -394,7 +394,7 @@
     </div>
   </div>
   <div class="nav-links">
-    <a href="index.html">Inicio</a>
+    <a href="dashboard.html">Inicio</a>
     <a href="adultos.html">Beneficiarios</a>
     <a href="donaciones.html" class="active">Donaciones</a>
     <a href="reportes.html" data-solo-admin>Reportes</a>
@@ -403,10 +403,25 @@
   <div class="nav-right">
     <button class="nav-icon-btn">🔍</button>
     <button class="nav-icon-btn">🔔</button>
-    <div class="user-chip">
-      <div class="user-avatar">AU</div>
-      Admin Unbound
+    <div class="user-chip" id="userChip">
+      <div class="user-avatar" id="userAvatar">AU</div>
+      <span id="userName">Admin Unbound</span>
     </div>
+    <button onclick="cerrarSesion()" style="
+      background: none;
+      border: 1.5px solid var(--red, #C0392B);
+      border-radius: 8px;
+      padding: 6px 16px;
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--red, #C0392B);
+      cursor: pointer;
+      font-family: inherit;
+      transition: background .2s, color .2s;
+    " onmouseover="this.style.background='#FDEDEC'" 
+       onmouseout="this.style.background='none'">
+       Cerrar sesión
+    </button>
   </div>
 </nav>
 
@@ -486,7 +501,7 @@
         <option>Cama y colchón</option>
         <option>Televisor</option>
       </select>
-      <button class="btn-export" onclick="showToast('📥','Exportando a Excel…')">📥 Exportar</button>
+      <button class="btn-export" onclick="exportarExcel()">📥 Exportar</button>
     </div>
 
     <div class="table-card">
@@ -664,25 +679,73 @@
 </div>
 
 <script>
-document.addEventListener("DOMContentLoaded", () => {
-  Session.requerir(); // redirige a login.html si no hay token
+document.addEventListener("DOMContentLoaded", async () => {
+  const token = localStorage.getItem("fs_token");
+  if (!token) { window.location.href = "login.html"; return; }
 
-  const rol    = Session.rol();     // "admin" o "empresa"
-  const nombre = Session.nombre();
+  const headers = { "Authorization": "Bearer " + token };
 
-  // Actualizar el chip del navbar con nombre real y botón de salir
-  document.querySelector(".user-chip").innerHTML = `
-    <div class="user-avatar">${iniciales(nombre)}</div>
-    ${nombre}
-    <span style="margin-left:8px;font-size:11px;color:var(--teal);cursor:pointer"
-          onclick="Auth.logout()">Salir</span>
-  `;
+  // Inicializar fecha de hoy
+  const fechaInput = document.getElementById("fFecha");
+  if (fechaInput) fechaInput.valueAsDate = new Date();
 
-  // Ocultar secciones según rol
-  if (rol === "empresa") {
-    document.querySelectorAll("[data-solo-admin]").forEach(el => el.style.display = "none");
+  // Ocultar formulario al inicio
+  const formPanel = document.getElementById("formPanel");
+  if (formPanel) formPanel.style.display = "none";
+
+  try {
+    const res = await fetch("http://localhost:8000/donaciones/", { headers });
+    if (res.status === 401) { window.location.href = "login.html"; return; }
+    const data = await res.json();
+
+    // Mapear datos del backend al formato que usa renderTabla
+    const mapped = data.map(d => ({
+      id:          d.folio,
+      empresa:     d.empresa?.razon_social || "—",
+      beneficiario:d.beneficiario?.nombre  || "—",
+      materiales:  d.items?.slice(0,2).map(i => i.descripcion).join(", ") || "—",
+      fecha:       d.fecha,
+      valor:       d.valor_total,
+      estado:      d.estado,
+      items:       d.items || [],
+      obs:         d.observaciones || "—",
+      modalidad:   d.modalidad || "—"
+    }));
+
+    renderTabla(mapped.length > 0 ? mapped : donaciones);
+  } catch (err) {
+    console.warn("Backend no disponible:", err.message);
+    renderTabla(donaciones); // usa los datos demo del archivo
+  }
+
+  // Cargar empresas y beneficiarios en los selectores del formulario
+  try {
+    const [emps, adults] = await Promise.all([
+      fetch("http://localhost:8000/empresas/",  { headers }).then(r => r.json()),
+      fetch("http://localhost:8000/adultos/",   { headers }).then(r => r.json()),
+    ]);
+
+    const selEmp = document.getElementById("fEmpresa");
+    const selBen = document.getElementById("fBeneficiario");
+
+    if (selEmp && emps.length > 0) {
+      selEmp.innerHTML = '<option value="">— Seleccionar empresa —</option>' +
+        emps.map(e => `<option value="${e.id}">${e.razon_social} – NIT ${e.nit}</option>`).join("");
+    }
+    if (selBen && adults.length > 0) {
+      selBen.innerHTML = '<option value="">— Seleccionar beneficiario —</option>' +
+        adults.map(a => `<option value="${a.id}">${a.nombre} – ID ${a.identificacion} (Urgencia: ${a.urgencia})</option>`).join("");
+    }
+  } catch (err) {
+    console.warn("No se pudieron cargar los selectores:", err.message);
   }
 });
+
+// ── CERRAR SESIÓN ────────────────────────────────────────────────────────────
+function cerrarSesion() {
+  localStorage.clear();
+  window.location.href = "login.html";
+}
 
 // ── TABLA ────────────────────────────────────────────────────────────────────
 function estadoClass(e) {
@@ -977,14 +1040,14 @@ function construirNavbar() {
 
   if (rol === "empresa") {
     links.innerHTML = `
-      <a href="index.html">Inicio</a>
+      <a href="dashboard.html">Inicio</a>
       <a href="adultos.html">Beneficiarios</a>
       <a href="donaciones.html">Mis Donaciones</a>
       <a href="certificado.html">Mis Certificados</a>
     `;
   } else {
     links.innerHTML = `
-      <a href="index.html">Inicio</a>
+      <a href="dashboard.html">Inicio</a>
       <a href="adultos.html">Beneficiarios</a>
       <a href="donaciones.html">Donaciones</a>
       <a href="empresas.html">Empresas</a>
@@ -1003,6 +1066,43 @@ function construirNavbar() {
       a.classList.remove("active");
     }
   });
+}
+
+//Exportar a Excel 
+function exportarExcel() {
+  const filas = document.querySelectorAll("#tablebody tr");
+  if (!filas.length) { showToast("⚠️","Sin datos que exportar"); return; }
+
+  const enc = ["#","Empresa Donante","Beneficiario","Materiales","Fecha","Valor","Estado"];
+  const datos = [];
+
+  filas.forEach(tr => {
+    const td = tr.querySelectorAll("td");
+    if (td.length >= 7) {
+      datos.push([
+        td[0].textContent.trim(),
+        td[1].textContent.trim(),
+        td[2].textContent.trim(),
+        td[3].textContent.trim(),
+        td[4].textContent.trim(),
+        td[5].textContent.trim(),
+        td[6].textContent.trim(),
+      ]);
+    }
+  });
+
+  const csv = [enc, ...datos]
+    .map(r => r.map(c => `"${c.replace(/"/g,'""')}"`).join(","))
+    .join("\n");
+
+  const blob = new Blob(["\uFEFF" + csv], { type:"text/csv;charset=utf-8;" });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement("a");
+  a.href     = url;
+  a.download = `donaciones_${new Date().toISOString().split("T")[0]}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast("✅","Archivo descargado");
 }
 
 // ── INIT ─────────────────────────────────────────────────────────────────────

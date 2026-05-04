@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Dashboard – Financiando Sueños | Unbound</title>
+  <title>Dashboard  Financiando Sueños | Unbound</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Merriweather:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
@@ -294,12 +294,27 @@
   </div>
   <div class="nav-links" id="navLinks"></div>
   <div class="nav-right">
-    <button class="nav-icon-btn" id="btnNotif" title="Notificaciones">🔔</button>
+    <button class="nav-icon-btn">🔍</button>
+    <button class="nav-icon-btn">🔔</button>
     <div class="user-chip" id="userChip">
-      <div class="user-avatar" id="userAvatar">…</div>
-      <span id="userName">Cargando…</span>
-      <button class="logout-btn" onclick="cerrarSesion()">Salir</button>
+      <div class="user-avatar" id="userAvatar">AU</div>
+      <span id="userName">Admin Unbound</span>
     </div>
+    <button onclick="cerrarSesion()" style="
+      background: none;
+      border: 1.5px solid var(--red, #C0392B);
+      border-radius: 8px;
+      padding: 6px 16px;
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--red, #C0392B);
+      cursor: pointer;
+      font-family: inherit;
+      transition: background .2s, color .2s;
+    " onmouseover="this.style.background='#FDEDEC'" 
+       onmouseout="this.style.background='none'">
+       Cerrar sesión
+    </button>
   </div>
 </nav>
 
@@ -332,10 +347,75 @@
 </div>
 
 <script>
-// ══════════════════════════════════════════════════════════════════════════════
-// SIMULACIÓN DE SESIÓN
-// En producción esto viene de api.js (Session.rol(), Session.nombre(), etc.)
-// ══════════════════════════════════════════════════════════════════════════════
+
+// ── DATOS DEMO ────────────────────────────────────────────────────────────────
+const DEMO = {
+  admin: {
+    kpis: [
+      { icon:"📦", label:"Total donaciones",       value:"47",     delta:"▲ +8 este mes",   cls:"d-up",     color:"var(--teal)"   },
+      { icon:"💰", label:"Valor en materiales",    value:"$38'000.000", delta:"▲ +$6.2M vs mes", cls:"d-up",     color:"var(--green)"  },
+      { icon:"🏠", label:"Hogares beneficiados",   value:"23",     delta:"82% del total",   cls:"d-info",   color:"var(--gold)"   },
+      { icon:"🏢", label:"Empresas activas",       value:"12",     delta:"+2 nuevas",       cls:"d-purple", color:"var(--purple)" },
+    ],
+    actividad: [
+      { dot:"var(--teal)",   titulo:"DON-047 registrada",        desc:"Materiales del Norte → María I. Torres",  time:"Hace 2h",  val:"$815.000"   },
+      { dot:"var(--green)",  titulo:"Empresa nueva registrada",  desc:"Cerámicas del Valle S.A.S.",              time:"Hace 5h",  val:""           },
+      { dot:"var(--teal)",   titulo:"DON-046 registrada",        desc:"Ferreterías XYZ → Jorge E. Ríos",         time:"Ayer",     val:"$1.200.000" },
+      { dot:"var(--orange)", titulo:"DON-042 pendiente soporte", desc:"Ferreterías XYZ → Hernando Gómez",        time:"Hace 2d",  val:"$1.450.000" },
+      { dot:"var(--gold)",   titulo:"Beneficiario actualizado",  desc:"Necesidades de Rosa E. Muñoz",            time:"Hace 3d",  val:""           },
+    ],
+    topEmpresas: [
+      { nombre:"Materiales del Norte S.A.S.", valor:14.2, don:18, pct:100 },
+      { nombre:"Ferreterías XYZ Ltda.",       valor:10.8, don:14, pct:76  },
+      { nombre:"Cerámicas TechCorp S.A.",     valor:7.4,  don:9,  pct:52  },
+      { nombre:"Electrohogar Dist. S.A.",     valor:6.0,  don:6,  pct:42  },
+    ],
+    urgentes: [
+      { nombre:"María Inés Torres",  ciudad:"Bogotá", mat:"Tejas, cemento, barillas",    urgencia:"Alta"  },
+      { nombre:"Lucía A. Castaño",   ciudad:"Bogotá", mat:"Baldosas, electrodomésticos", urgencia:"Alta"  },
+      { nombre:"Rosa Elena Muñoz",   ciudad:"Cali",   mat:"Techo, cama, nevera",         urgencia:"Alta"  },
+      { nombre:"Jorge Ernesto Ríos", ciudad:"Bogotá", mat:"Cama, muebles, televisor",    urgencia:"Media" },
+    ],
+    meses:      ["Ene","Feb","Mar"],
+    valoresMes: [10.2, 14.6, 13.6],
+    cantMes:    [13, 19, 15],
+    pendientes: 3,
+  },
+
+  empresa: {
+    razon: "Materiales y Acabados del Norte S.A.S.",
+    nit:   "900.456.123-7",
+    kpis: [
+      { icon:"📦", label:"Mis donaciones",        value:"18",     delta:"▲ +3 este mes",       cls:"d-up",   color:"var(--teal)"   },
+      { icon:"💰", label:"Valor total donado",    value:"$14'000.000", delta:"Acumulado 2026",       cls:"d-info", color:"var(--green)"  },
+      { icon:"🏠", label:"Hogares ayudados",      value:"14",     delta:"Familias impactadas",  cls:"d-info", color:"var(--gold)"   },
+      { icon:"📄", label:"Certificados emitidos", value:"18",     delta:"Todos disponibles",    cls:"d-up",   color:"var(--purple)" },
+    ],
+    misDonaciones: [
+      { folio:"CF-2026-001", beneficiario:"María I. Torres",  mat:"Cemento, barillas, tejas", fecha:"24/03/2026", valor:815000,  estado:"Registrada"      },
+      { folio:"CF-2026-004", beneficiario:"Pedro M. Vargas",  mat:"Pintura exterior",          fecha:"18/03/2026", valor:320000,  estado:"En verificación" },
+      { folio:"CF-2026-008", beneficiario:"Lucía A. Castaño", mat:"Cemento + Pintura",         fecha:"01/03/2026", valor:540000,  estado:"Registrada"      },
+      { folio:"CF-2026-011", beneficiario:"Rosa E. Muñoz",    mat:"Tejas fibrocemento x30",    fecha:"14/02/2026", valor:680000,  estado:"Registrada"      },
+    ],
+    impacto: [
+      { label:"Materiales de construcción", valor:18, total:47, color:"var(--teal)",   pct:38 },
+      { label:"Pintura y acabados",          valor:7,  total:47, color:"var(--navy)",   pct:15 },
+      { label:"Cubierta y tejas",            valor:12, total:47, color:"var(--gold)",   pct:26 },
+      { label:"Otros materiales",            valor:10, total:47, color:"var(--purple)", pct:21 },
+    ],
+    certificados: [
+      { folio:"CF-2026-001", desc:"María Inés Torres – Cemento + tejas",  fecha:"24/03/2026" },
+      { folio:"CF-2026-004", desc:"Pedro M. Vargas – Pintura exterior",   fecha:"18/03/2026" },
+      { folio:"CF-2026-008", desc:"Lucía A. Castaño – Cemento + pintura", fecha:"01/03/2026" },
+    ],
+    urgentes: [
+      { nombre:"María Inés Torres", ciudad:"Bogotá", mat:"Necesita tejas y cemento urgente", urgencia:"Alta" },
+      { nombre:"Lucía A. Castaño",  ciudad:"Bogotá", mat:"Baldosas y electrodomésticos",     urgencia:"Alta" },
+      { nombre:"Rosa Elena Muñoz",  ciudad:"Cali",   mat:"Cubierta y nevera",                urgencia:"Alta" },
+    ],
+  }
+};
+
 const SESSION = {
   // ── CAMBIA ESTE VALOR PARA PROBAR LOS DOS ROLES ──
   // "admin"   → vista del administrador Unbound
@@ -528,6 +608,8 @@ function renderAdmin() {
     <div class="row-2">${actHTML}${topHTML}</div>
     <div class="sec-label">Gestión y análisis</div>
     <div class="row-2">${quickHTML}${urgHTML}</div>
+    <div class="sec-label">Análisis temporal</div>
+    ${chartHTML}
   `;
 
   // Gráfica mini inline en actividad no tiene canvas; construir gráfica en reportes

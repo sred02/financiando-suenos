@@ -300,7 +300,7 @@
     </div>
   </div>
   <div class="nav-links">
-    <a href="index.html">Inicio</a>
+    <a href="dashboard.html">Inicio</a>
     <a href="adultos.html">Beneficiarios</a>
     <a href="donaciones.html">Donaciones</a>
     <a href="empresas.html" class="active" data-solo-admin>Empresas</a>
@@ -310,10 +310,25 @@
   <div class="nav-right">
     <button class="nav-icon-btn">🔍</button>
     <button class="nav-icon-btn">🔔</button>
-    <div class="user-chip">
-      <div class="user-avatar">AU</div>
-      Admin Unbound
+    <div class="user-chip" id="userChip">
+      <div class="user-avatar" id="userAvatar">AU</div>
+      <span id="userName">Admin Unbound</span>
     </div>
+    <button onclick="cerrarSesion()" style="
+      background: none;
+      border: 1.5px solid var(--red, #C0392B);
+      border-radius: 8px;
+      padding: 6px 16px;
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--red, #C0392B);
+      cursor: pointer;
+      font-family: inherit;
+      transition: background .2s, color .2s;
+    " onmouseover="this.style.background='#FDEDEC'" 
+       onmouseout="this.style.background='none'">
+       Cerrar sesión
+    </button>
   </div>
 </nav>
 
@@ -530,14 +545,14 @@ function construirNavbar() {
 
   if (rol === "empresa") {
     links.innerHTML = `
-      <a href="index.html">Inicio</a>
+      <a href="dashboard.html">Inicio</a>
       <a href="adultos.html">Beneficiarios</a>
       <a href="donaciones.html">Mis Donaciones</a>
       <a href="certificado.html">Mis Certificados</a>
     `;
   } else {
     links.innerHTML = `
-      <a href="index.html">Inicio</a>
+      <a href="dashboard.html">Inicio</a>
       <a href="adultos.html">Beneficiarios</a>
       <a href="donaciones.html">Donaciones</a>
       <a href="empresas.html">Empresas</a>
@@ -559,31 +574,48 @@ function construirNavbar() {
 }
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
-document.addEventListener("DOMContentLoaded", () => {
-  Session.requerir(); // redirige a login.html si no hay token
+document.addEventListener("DOMContentLoaded", async () => {
+  const token = localStorage.getItem("fs_token");
+  if (!token) { window.location.href = "login.html"; return; }
 
-  const rol    = Session.rol();     // "admin" o "empresa"
-  const nombre = Session.nombre();
+  const headers = { "Authorization": "Bearer " + token };
 
-  // Actualizar el chip del navbar con nombre real y botón de salir
-  document.querySelector(".user-chip").innerHTML = `
-    <div class="user-avatar">${iniciales(nombre)}</div>
-    ${nombre}
-    <span style="margin-left:8px;font-size:11px;color:var(--teal);cursor:pointer"
-          onclick="Auth.logout()">Salir</span>
-  `;
+  try {
+    const res = await fetch("http://localhost:8000/empresas/", { headers });
+    if (res.status === 401) { window.location.href = "login.html"; return; }
+    const data = await res.json();
 
-  // Ocultar secciones según rol
-  if (rol === "empresa") {
-    document.querySelectorAll("[data-solo-admin]").forEach(el => el.style.display = "none");
+    // Mapear datos del backend al formato de las tarjetas
+    const mapped = data.map(e => ({
+      id:            e.id,
+      razon_social:  e.razon_social,
+      nit:           e.nit,
+      sector:        e.sector        || "—",
+      tamano:        e.tamano        || "—",
+      representante: e.representante || "—",
+      cargo:         e.cargo         || "—",
+      correo:        e.correo        || "—",
+      telefono:      e.telefono      || "—",
+      direccion:     e.direccion     || "—",
+      activo:        e.activo,
+      donaciones:    0,
+      valor_total:   0,
+      categorias:    [],
+      donaciones_recientes: []
+    }));
+
+    renderCards(mapped.length > 0 ? mapped : empresas);
+  } catch (err) {
+    console.warn("Backend no disponible:", err.message);
+    renderCards(empresas); // usa los datos demo del archivo
   }
-
-  // Construir navbar
-  construirNavbar();
-
-  // Renderizar tarjetas
-  renderCards(empresas);
 });
+
+// ── CERRAR SESIÓN ────────────────────────────────────────────────────────────
+function cerrarSesion() {
+  localStorage.clear();
+  window.location.href = "login.html";
+}
 
 let tabActiva  = "todas";
 let editandoId = null;

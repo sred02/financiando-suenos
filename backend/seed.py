@@ -1,11 +1,15 @@
-from auth import hash_password
+
 from database import SessionLocal, engine
 import models
+from auth import hash_password
 
-
+# Limpiar y recrear todas las tablas
+print(" Limpiando base de datos anterior...")
+models.Base.metadata.drop_all(bind=engine)
 models.Base.metadata.create_all(bind=engine)
-db = SessionLocal()
+print("Tablas recreadas correctamente.")
 
+db = SessionLocal()
 # ── USUARIOS ──────────────────────────────────────────────────────────────────
 admin = models.Usuario(
     nombre="Administrador Unbound",

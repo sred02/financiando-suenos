@@ -467,12 +467,27 @@
   </div>
 
   <div class="nav-right">
-    <button class="nav-icon-btn" title="Buscar">🔍</button>
-    <button class="nav-icon-btn" title="Notificaciones">🔔</button>
-    <div class="user-chip">
-      <div class="user-avatar">AU</div>
-      Admin Unbound
+    <button class="nav-icon-btn">🔍</button>
+    <button class="nav-icon-btn">🔔</button>
+    <div class="user-chip" id="userChip">
+      <div class="user-avatar" id="userAvatar">AU</div>
+      <span id="userName">Admin Unbound</span>
     </div>
+    <button onclick="cerrarSesion()" style="
+      background: none;
+      border: 1.5px solid var(--red, #C0392B);
+      border-radius: 8px;
+      padding: 6px 16px;
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--red, #C0392B);
+      cursor: pointer;
+      font-family: inherit;
+      transition: background .2s, color .2s;
+    " onmouseover="this.style.background='#FDEDEC'" 
+       onmouseout="this.style.background='none'">
+       Cerrar sesión
+    </button>
   </div>
 </nav>
 
@@ -638,28 +653,28 @@
 <script>
 let rolActual = null; // Variable global para almacenar el rol
 
-document.addEventListener("DOMContentLoaded", () => {
-  Session.requerir(); // redirige a login.html si no hay token
+document.addEventListener("DOMContentLoaded", async () => {
+  const token = localStorage.getItem("fs_token");
+  if (!token) { window.location.href = "login.html"; return; }
 
-  const rol    = Session.rol();     // "admin" o "empresa"
-  const nombre = Session.nombre();
-  rolActual = rol; // Guardar rol globalmente
+  const headers = { "Authorization": "Bearer " + token };
 
-  // Actualizar el chip del navbar con nombre real y botón de salir
-  document.querySelector(".user-chip").innerHTML = `
-    <div class="user-avatar">${iniciales(nombre)}</div>
-    ${nombre}
-    <span style="margin-left:8px;font-size:11px;color:var(--teal);cursor:pointer"
-          onclick="Auth.logout()">Salir</span>
-  `;
-
-  // Ocultar secciones según rol
-  if (rol === "empresa") {
-    document.querySelectorAll("[data-solo-admin]").forEach(el => el.style.display = "none");
-
-    // Ocultar botón "Nuevo beneficiario"
-    const btnNuevo = document.getElementById("btnNuevo");
-    if (btnNuevo) btnNuevo.style.display = "none";
+  try {
+    const res = await fetch("http://localhost:8000/adultos/", { headers });
+    if (res.status === 401) { window.location.href = "login.html"; return; }
+    const data = await res.json();
+    renderCards(data);
+  } catch (err) {
+    console.warn("Backend no disponible:", err.message);
+    // Datos de respaldo para que no quede vacío
+    renderCards([
+      { id:1, nombre:"María Inés Torres", identificacion:"25431987", edad:76, ciudad:"Bogotá", barrio:"Los Cedritos", urgencia:"Alta", estado:"Sin donación activa", necesidades:"Cubierta y tejas,Cemento y barillas,Pintura", descripcion:"Techo con filtraciones.", foto:null, acudiente:"Carlos Torres" },
+      { id:2, nombre:"Jorge Ernesto Ríos", identificacion:"13887204", edad:81, ciudad:"Bogotá", barrio:"Kennedy", urgencia:"Media", estado:"Sin donación activa", necesidades:"Cama y colchón,Muebles de sala,Televisor", descripcion:"Sin mobiliario básico.", foto:null, acudiente:"—" },
+      { id:3, nombre:"Lucía Amparo Castaño", identificacion:"41205339", edad:73, ciudad:"Bogotá", barrio:"Chapinero", urgencia:"Alta", estado:"Sin donación activa", necesidades:"Baldosas y pisos,Electrodomésticos,Pintura", descripcion:"Piso en tierra.", foto:null, acudiente:"Rosa Castaño" },
+      { id:4, nombre:"Pedro Manuel Vargas", identificacion:"7654321", edad:69, ciudad:"Medellín", barrio:"Belén", urgencia:"Media", estado:"Con donación en curso", necesidades:"Pintura y acabados", descripcion:"Paredes sin pintar.", foto:null, acudiente:"—" },
+      { id:5, nombre:"Rosa Elena Muñoz", identificacion:"31876543", edad:78, ciudad:"Cali", barrio:"El Jardín", urgencia:"Alta", estado:"Sin donación activa", necesidades:"Electrodomésticos,Cama y colchón,Cubierta y tejas", descripcion:"Techo deteriorado.", foto:null, acudiente:"Vecina" },
+      { id:6, nombre:"Hernando Gómez Salas", identificacion:"8123456", edad:84, ciudad:"Bucaramanga", barrio:"Cabecera", urgencia:"Baja", estado:"Sin donación activa", necesidades:"Muebles y sala,Televisor,Pisos y baldosas", descripcion:"Sin mobiliario en sala.", foto:null, acudiente:"Hermano" },
+    ]);
   }
 });
 
@@ -704,7 +719,10 @@ document.addEventListener("DOMContentLoaded", () => {
             <div class="card-info-row">Estado: <b>${a.estado}</b></div>
           </div>
           <div class="card-tags">
-            ${a.necesidades.map((n,i) => `<span class="tag ${i===0 && a.urgencia==='Alta'?'urgent':''}">${n}</span>`).join('')}
+            ${(typeof a.necesidades === "string"
+              ? a.necesidades.split(",").map(n => n.trim()).filter(Boolean)
+              : a.necesidades || []
+            ).map((n,i) => `<span class="tag ${i===0 && a.urgencia==='Alta'?'urgent':''}">${n}</span>`).join('')}
           </div>
           <div class="card-actions">
             ${rolActual === "empresa" 
@@ -803,19 +821,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // ── NAVBAR SEGÚN ROL ──────────────────────────────────────────────────────
   function construirNavbar() {
-    const rol = Session.rol();
+    const rol = localStorage.getItem("fs_rol");
     const links = document.querySelector(".nav-links");
 
     if (rol === "empresa") {
       links.innerHTML = `
-        <a href="index.html">Inicio</a>
+        <a href="dashboard.html">Inicio</a>
         <a href="adultos.html">Beneficiarios</a>
         <a href="donaciones.html">Mis Donaciones</a>
         <a href="certificado.html">Mis Certificados</a>
       `;
     } else {
       links.innerHTML = `
-        <a href="index.html">Inicio</a>
+        <a href="dashboard.html">Inicio</a>
         <a href="adultos.html">Beneficiarios</a>
         <a href="donaciones.html">Donaciones</a>
         <a href="empresas.html">Empresas</a>
@@ -834,6 +852,12 @@ document.addEventListener("DOMContentLoaded", () => {
         a.classList.remove("active");
       }
     });
+  }
+
+  // ── CERRAR SESIÓN ─────────────────────────────────────────────────────────
+  function cerrarSesion() {
+    localStorage.clear();
+    window.location.href = "login.html";
   }
 
   // ── INIT ──────────────────────────────────────────────────────────────────

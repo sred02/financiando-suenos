@@ -294,7 +294,7 @@
     </div>
   </div>
   <div class="nav-links">
-    <a href="index.html">Inicio</a>
+    <a href="dashboard.html">Inicio</a>
     <a href="adultos.html">Beneficiarios</a>
     <a href="donaciones.html">Donaciones</a>
     <a href="reportes.html" class="active">Reportes</a>
@@ -303,10 +303,25 @@
   <div class="nav-right">
     <button class="nav-icon-btn">🔍</button>
     <button class="nav-icon-btn">🔔</button>
-    <div class="user-chip">
-      <div class="user-avatar">AU</div>
-      Admin Unbound
+    <div class="user-chip" id="userChip">
+      <div class="user-avatar" id="userAvatar">AU</div>
+      <span id="userName">Admin Unbound</span>
     </div>
+    <button onclick="cerrarSesion()" style="
+      background: none;
+      border: 1.5px solid var(--red, #C0392B);
+      border-radius: 8px;
+      padding: 6px 16px;
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--red, #C0392B);
+      cursor: pointer;
+      font-family: inherit;
+      transition: background .2s, color .2s;
+    " onmouseover="this.style.background='#FDEDEC'" 
+       onmouseout="this.style.background='none'">
+       Cerrar sesión
+    </button>
   </div>
 </nav>
 
@@ -317,8 +332,8 @@
     <p>Panel de control — Período: Enero – Marzo 2026</p>
   </div>
   <div class="header-actions">
-    <button class="btn-export" onclick="showToast('📊','Exportando a Excel…')">📊 Exportar Excel</button>
-    <button class="btn-export" onclick="showToast('📄','Generando PDF…')">📄 Exportar PDF</button>
+    <button class="btn-export" onclick="exportarExcel()">📊 Exportar Excel</button>
+    <button class="btn-export" onclick="exportarPDF()">📄 Exportar PDF</button>
     <button class="btn-print" onclick="window.print()">🖨️ Imprimir</button>
   </div>
 </div>
@@ -856,14 +871,14 @@ function construirNavbar() {
 
   if (rol === "empresa") {
     links.innerHTML = `
-      <a href="index.html">Inicio</a>
+      <a href="dashboard.html">Inicio</a>
       <a href="adultos.html">Beneficiarios</a>
       <a href="donaciones.html">Mis Donaciones</a>
       <a href="certificado.html">Mis Certificados</a>
     `;
   } else {
     links.innerHTML = `
-      <a href="index.html">Inicio</a>
+      <a href="dashboard.html">Inicio</a>
       <a href="adultos.html">Beneficiarios</a>
       <a href="donaciones.html">Donaciones</a>
       <a href="empresas.html">Empresas</a>
@@ -884,9 +899,138 @@ function construirNavbar() {
   });
 }
 
+//Exportar Excel y PDF (simulado)
+function exportarExcel() {
+  // Obtener los datos visibles de la tabla
+  const filas = document.querySelectorAll("#tableBody tr");
+  if (!filas.length) { showToast("⚠️","No hay datos para exportar"); return; }
+
+  // Construir CSV (compatible con Excel)
+  const encabezado = ["ID","Empresa Donante","Beneficiario","Materiales","Fecha","Valor Estimado","Estado"];
+  const filasDatos = [];
+
+  filas.forEach(tr => {
+    const celdas = tr.querySelectorAll("td");
+    if (celdas.length >= 7) {
+      filasDatos.push([
+        celdas[0].textContent.trim(),
+        celdas[1].textContent.trim(),
+        celdas[2].textContent.trim(),
+        celdas[3].textContent.trim(),
+        celdas[4].textContent.trim(),
+        celdas[5].textContent.trim(),
+        celdas[6].textContent.trim(),
+      ]);
+    }
+  });
+
+  const csvContent = [encabezado, ...filasDatos]
+    .map(row => row.map(c => `"${c.replace(/"/g,'""')}"`).join(","))
+    .join("\n");
+
+  // BOM para que Excel lo abra correctamente con tildes
+  const blob = new Blob(["\uFEFF" + csvContent], { type: "text/csv;charset=utf-8;" });
+  const url  = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href     = url;
+  link.download = `reporte_donaciones_${new Date().toISOString().split("T")[0]}.csv`;
+  link.click();
+  URL.revokeObjectURL(url);
+  showToast("✅", "Reporte descargado correctamente");
+}
+
+function exportarPDF() {
+  const filas = document.querySelectorAll("#tableBody tr");
+  if (!filas.length) { showToast("⚠️","No hay datos para exportar"); return; }
+
+  // Construir tabla HTML para imprimir
+  let filasHTML = "";
+  filas.forEach(tr => {
+    const celdas = tr.querySelectorAll("td");
+    if (celdas.length >= 7) {
+      filasHTML += `<tr>
+        <td>${celdas[0].textContent.trim()}</td>
+        <td>${celdas[1].textContent.trim()}</td>
+        <td>${celdas[2].textContent.trim()}</td>
+        <td>${celdas[3].textContent.trim()}</td>
+        <td>${celdas[4].textContent.trim()}</td>
+        <td>${celdas[5].textContent.trim()}</td>
+        <td>${celdas[6].textContent.trim()}</td>
+      </tr>`;
+    }
+  });
+
+  const kpiTotal   = document.getElementById("kpi-total")?.textContent   || "—";
+  const kpiValor   = document.getElementById("kpi-valor")?.textContent   || "—";
+  const kpiHogares = document.getElementById("kpi-hogares")?.textContent || "—";
+  const kpiEmpresas= document.getElementById("kpi-empresas")?.textContent|| "—";
+  const hoy        = new Date().toLocaleDateString("es-CO", { year:"numeric", month:"long", day:"numeric" });
+
+  const ventana = window.open("", "_blank");
+  ventana.document.write(`
+    <!DOCTYPE html><html lang="es"><head>
+    <meta charset="UTF-8"/>
+    <title>Reporte Financiando Sueños</title>
+    <style>
+      * { margin:0; padding:0; box-sizing:border-box; }
+      body { font-family: Arial, sans-serif; color: #1C2B3A; padding: 32px; }
+      .header { background: #1B3A5C; color: #fff; padding: 20px 28px; border-radius: 8px; margin-bottom: 24px; display:flex; justify-content:space-between; align-items:center; }
+      .header h1 { font-size: 20px; }
+      .header p  { font-size: 12px; opacity: .7; margin-top: 4px; }
+      .header .fecha { font-size: 12px; opacity: .6; }
+      .kpis { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-bottom: 24px; }
+      .kpi  { background: #F0F2F5; border-radius: 6px; padding: 14px; text-align:center; }
+      .kpi-label { font-size: 10px; text-transform:uppercase; color:#8C97A8; letter-spacing:.6px; margin-bottom:4px; }
+      .kpi-value { font-size: 22px; font-weight: 800; color: #1B3A5C; }
+      h2 { font-size: 14px; color: #1B3A5C; margin-bottom: 10px; padding-bottom:6px; border-bottom:2px solid #00A99D; }
+      table { width:100%; border-collapse:collapse; font-size: 11px; }
+      thead th { background:#1B3A5C; color:#fff; padding:8px 10px; text-align:left; }
+      tbody tr:nth-child(even) { background:#F8F9FA; }
+      tbody td { padding:7px 10px; border-bottom:1px solid #E5E7E9; }
+      .footer { margin-top:24px; text-align:center; font-size:10px; color:#8C97A8; border-top:1px solid #E5E7E9; padding-top:12px; }
+      @media print { body { padding:16px; } }
+    </style>
+    </head><body>
+    <div class="header">
+      <div>
+        <h1>🏠 Financiando Sueños – Reporte de Donaciones</h1>
+        <p>Una iniciativa de Unbound Colombia</p>
+      </div>
+      <div class="fecha">Generado el ${hoy}</div>
+    </div>
+    <div class="kpis">
+      <div class="kpi"><div class="kpi-label">Total Donaciones</div><div class="kpi-value">${kpiTotal}</div></div>
+      <div class="kpi"><div class="kpi-label">Valor en Materiales</div><div class="kpi-value">${kpiValor}</div></div>
+      <div class="kpi"><div class="kpi-label">Hogares Beneficiados</div><div class="kpi-value">${kpiHogares}</div></div>
+      <div class="kpi"><div class="kpi-label">Empresas Activas</div><div class="kpi-value">${kpiEmpresas}</div></div>
+    </div>
+    <h2>Historial de Donaciones</h2>
+    <table>
+      <thead><tr>
+        <th>#</th><th>Empresa Donante</th><th>Beneficiario</th>
+        <th>Materiales</th><th>Fecha</th><th>Valor</th><th>Estado</th>
+      </tr></thead>
+      <tbody>${filasHTML}</tbody>
+    </table>
+    <div class="footer">
+      Financiando Sueños · Unbound Colombia · Ley 1581 de 2012 – Protección de Datos Personales
+    </div>
+    ventana.document.close();
+    setTimeout(() => { ventana.print(); }, 500);
+    </body></html>
+  `);
+  ventana.document.close();
+  showToast("✅","Abriendo PDF para imprimir o guardar");
+}
+
 // ── INIT ───────────────────────────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', () => {
-  construirNavbar(); // Construir navbar según el rol
+document.addEventListener("DOMContentLoaded", async () => {
+  const token = localStorage.getItem("fs_token");
+  if (!token) { window.location.href = "login.html"; return; }
+
+  const headers = { "Authorization": "Bearer " + token };
+
+  // Inicializar con datos demo primero (para que no quede vacío)
   buildChartLinea();
   buildChartDona();
   buildChartUrgencia();
@@ -896,8 +1040,66 @@ document.addEventListener('DOMContentLoaded', () => {
   buildEstado();
   renderTabla(donaciones);
 
-  
+  // Luego reemplazar con datos reales del backend
+  try {
+    const [resumen, meses, categorias, topEmps, ciudades, urgencia] = await Promise.all([
+      fetch(`${API_BASE}/reportes/resumen`,              { headers }).then(r => r.ok ? r.json() : null),
+      fetch(`${API_BASE}/reportes/por-mes`,              { headers }).then(r => r.ok ? r.json() : null),
+      fetch(`${API_BASE}/reportes/por-categoria`,        { headers }).then(r => r.ok ? r.json() : null),
+      fetch(`${API_BASE}/reportes/top-empresas?limit=4`, { headers }).then(r => r.ok ? r.json() : null),
+      fetch(`${API_BASE}/reportes/por-ciudad`,           { headers }).then(r => r.ok ? r.json() : null),
+      fetch(`${API_BASE}/reportes/urgencia-beneficiarios`, { headers }).then(r => r.ok ? r.json() : null),
+    ]);
+
+    // Actualizar KPIs
+    if (resumen) {
+      document.getElementById("kpi-total").textContent    = resumen.total_donaciones;
+      document.getElementById("kpi-valor").textContent    = "$" + (resumen.valor_total/1e6).toFixed(1) + "M";
+      document.getElementById("kpi-hogares").textContent  = resumen.hogares_atendidos;
+      document.getElementById("kpi-empresas").textContent = resumen.empresas_activas;
+    }
+
+    // Actualizar gráfica de meses
+    if (meses && meses.length > 0 && chartLinea) {
+      const nombMes = ["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"];
+      chartLinea.data.labels = meses.map(m => nombMes[parseInt(m.mes.split("-")[1])-1]);
+      chartLinea.data.datasets[0].data = meses.map(m => parseFloat((m.valor/1e6).toFixed(1)));
+      chartLinea.update();
+    }
+
+  } catch (err) {
+    console.warn("Backend no disponible — mostrando datos demo:", err.message);
+  }
+
+  // Tabla con datos reales
+  try {
+    const res = await fetch(`${API_BASE}/donaciones/`, { headers });
+    if (res.ok) {
+      const data = await res.json();
+      if (data.length > 0) {
+        const mapped = data.map(d => ({
+          id:           d.folio,
+          empresa:      d.empresa?.razon_social?.split(" ").slice(0,3).join(" ") || "—",
+          beneficiario: d.beneficiario?.nombre?.split(" ").slice(0,3).join(" ")  || "—",
+          mat:          d.items?.slice(0,2).map(i => i.descripcion).join(", ")   || "—",
+          fecha:        d.fecha,
+          valor:        d.valor_total,
+          estado:       d.estado,
+          cat:          d.items?.[0]?.categoria || "—"
+        }));
+        renderTabla(mapped);
+      }
+    }
+  } catch (err) {
+    console.warn("No se pudo cargar la tabla:", err.message);
+  }
 });
+
+// ── CERRAR SESIÓN ────────────────────────────────────────────────────────────
+function cerrarSesion() {
+  localStorage.clear();
+  window.location.href = "login.html";
+}
 </script>
 <script src="assets/js/api.js"></script>
 </body>
