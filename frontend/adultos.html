@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -459,34 +458,21 @@
   </div>
 
   <div class="nav-links">
-    <a href="#">Inicio</a>
-    <a href="#" class="active">Beneficiarios</a>
-    <a href="#">Donaciones</a>
-    <a href="#">Reportes</a>
-    <a href="#">Configuración</a>
+    <a href="dashboard.html">Inicio</a>
+    <a href="adultos.html" class="active">Beneficiarios</a>
+    <a href="donaciones.html">Donaciones</a>
+    <a href="reportes.html">Reportes</a>
+    <a href="certificado.html">Certificados</a>
   </div>
 
   <div class="nav-right">
-    <button class="nav-icon-btn">🔍</button>
-    <button class="nav-icon-btn">🔔</button>
+    <button class="nav-icon-btn" title="Notificaciones">🔔</button>
     <div class="user-chip" id="userChip">
       <div class="user-avatar" id="userAvatar">AU</div>
       <span id="userName">Admin Unbound</span>
     </div>
-    <button onclick="cerrarSesion()" style="
-      background: none;
-      border: 1.5px solid var(--red, #C0392B);
-      border-radius: 8px;
-      padding: 6px 16px;
-      font-size: 13px;
-      font-weight: 800;
-      color: var(--red, #C0392B);
-      cursor: pointer;
-      font-family: inherit;
-      transition: background .2s, color .2s;
-    " onmouseover="this.style.background='#FDEDEC'" 
-       onmouseout="this.style.background='none'">
-       Cerrar sesión
+    <button onclick="cerrarSesion()" style="background:none;border:1.5px solid #C0392B;border-radius:8px;padding:6px 14px;font-size:13px;font-weight:800;color:#C0392B;cursor:pointer;font-family:inherit;" onmouseover="this.style.background='#FDEDEC'" onmouseout="this.style.background='none'">
+      🚪 Cerrar sesión
     </button>
   </div>
 </nav>
@@ -495,6 +481,11 @@
 <div class="hero">
   <h1>Adultos mayores que necesitan mejorar su hogar</h1>
   <p>Cada perfil representa una persona real. Tu donación de materiales transforma su espacio y su vida.</p>
+  <div id="btnNuevoWrap" style="margin-top:20px;">
+    <button onclick="abrirFormularioNuevo()" style="background:var(--teal);color:#fff;border:none;border-radius:10px;padding:12px 28px;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit;box-shadow:0 4px 14px rgba(0,169,157,.35);transition:background .2s;" onmouseover="this.style.background='#007f75'" onmouseout="this.style.background='var(--teal)'">
+      + Nuevo Beneficiario
+    </button>
+  </div>
 </div>
 
 <!-- BODY -->
@@ -623,7 +614,7 @@
   </div>
 </div>
 
-<!-- MODAL -->
+<!-- MODAL DETALLE -->
 <div class="modal-overlay" id="modalOverlay" onclick="cerrarModal(event)">
   <div class="modal" id="modalBox">
     <div class="modal-header">
@@ -640,9 +631,102 @@
       <p class="modal-section-title">Estado del hogar</p>
       <div class="modal-desc" id="modalDesc"></div>
       <div class="modal-footer">
+        <button class="btn-info" id="modalBtnEliminar" style="background:#FDEDEC;color:#C0392B;border:1.5px solid #C0392B;" onclick="eliminarDesdeModal()">🗑️ Eliminar</button>
         <button class="btn-info" onclick="cerrarModalBtn()">Cerrar</button>
-        <button class="btn-donar" onclick="showToast('¡Donación iniciada! Serás redirigido al formulario.')">Donar materiales</button>
+        <button class="btn-donar" onclick="irADonar()">Donar materiales</button>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL NUEVO / EDITAR BENEFICIARIO -->
+<div class="modal-overlay" id="formOverlay" onclick="cerrarFormOverlay(event)">
+  <div class="modal" id="formBox" style="max-width:580px;">
+    <div class="modal-header" style="background:var(--navy);">
+      <div>
+        <h2 id="formTitle" style="color:#fff;font-family:'Merriweather',serif;font-size:18px;">Nuevo Beneficiario</h2>
+        <p style="color:#AED6F1;font-size:12px;margin-top:3px;">Complete los datos del beneficiario</p>
+      </div>
+      <button class="modal-close" onclick="cerrarFormOverlay()" style="background:rgba(255,255,255,.15);color:#fff;">✕</button>
+    </div>
+    <div class="modal-body" style="max-height:70vh;overflow-y:auto;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+        <div style="grid-column:1/-1;">
+          <label style="font-size:12px;font-weight:800;color:var(--navy);display:block;margin-bottom:5px;">Nombre completo <span style="color:#C0392B;">*</span></label>
+          <input id="fNombre" type="text" placeholder="Ej: María Inés Torres" style="width:100%;border:1.5px solid #D8DCE3;border-radius:8px;padding:9px 12px;font-size:13px;font-family:inherit;" />
+        </div>
+        <div>
+          <label style="font-size:12px;font-weight:800;color:var(--navy);display:block;margin-bottom:5px;">Número de identificación <span style="color:#C0392B;">*</span></label>
+          <input id="fIdentificacion" type="text" placeholder="Ej: 25431987" style="width:100%;border:1.5px solid #D8DCE3;border-radius:8px;padding:9px 12px;font-size:13px;font-family:inherit;" />
+        </div>
+        <div>
+          <label style="font-size:12px;font-weight:800;color:var(--navy);display:block;margin-bottom:5px;">Fecha de nacimiento</label>
+          <input id="fFechaNac" type="date" style="width:100%;border:1.5px solid #D8DCE3;border-radius:8px;padding:9px 12px;font-size:13px;font-family:inherit;" />
+        </div>
+        <div>
+          <label style="font-size:12px;font-weight:800;color:var(--navy);display:block;margin-bottom:5px;">Género</label>
+          <select id="fGenero" style="width:100%;border:1.5px solid #D8DCE3;border-radius:8px;padding:9px 12px;font-size:13px;font-family:inherit;">
+            <option value="">— Seleccionar —</option>
+            <option>Femenino</option><option>Masculino</option><option>Otro</option>
+          </select>
+        </div>
+        <div style="grid-column:1/-1;">
+          <label style="font-size:12px;font-weight:800;color:var(--navy);display:block;margin-bottom:5px;">Dirección de residencia <span style="color:#C0392B;">*</span></label>
+          <input id="fDireccion" type="text" placeholder="Ej: Cra 15 #42-10" style="width:100%;border:1.5px solid #D8DCE3;border-radius:8px;padding:9px 12px;font-size:13px;font-family:inherit;" />
+        </div>
+        <div>
+          <label style="font-size:12px;font-weight:800;color:var(--navy);display:block;margin-bottom:5px;">Ciudad <span style="color:#C0392B;">*</span></label>
+          <input id="fCiudad" type="text" placeholder="Ej: Bogotá" style="width:100%;border:1.5px solid #D8DCE3;border-radius:8px;padding:9px 12px;font-size:13px;font-family:inherit;" />
+        </div>
+        <div>
+          <label style="font-size:12px;font-weight:800;color:var(--navy);display:block;margin-bottom:5px;">Barrio</label>
+          <input id="fBarrio" type="text" placeholder="Ej: Los Cedritos" style="width:100%;border:1.5px solid #D8DCE3;border-radius:8px;padding:9px 12px;font-size:13px;font-family:inherit;" />
+        </div>
+        <div>
+          <label style="font-size:12px;font-weight:800;color:var(--navy);display:block;margin-bottom:5px;">Teléfono</label>
+          <input id="fTelefono" type="text" placeholder="Ej: 310 455 7892" style="width:100%;border:1.5px solid #D8DCE3;border-radius:8px;padding:9px 12px;font-size:13px;font-family:inherit;" />
+        </div>
+        <div style="grid-column:1/-1;">
+          <label style="font-size:12px;font-weight:800;color:var(--navy);display:block;margin-bottom:5px;">Acudiente / Contacto de emergencia</label>
+          <input id="fAcudiente" type="text" placeholder="Ej: Carlos Torres – 315 678 2341" style="width:100%;border:1.5px solid #D8DCE3;border-radius:8px;padding:9px 12px;font-size:13px;font-family:inherit;" />
+        </div>
+        <div>
+          <label style="font-size:12px;font-weight:800;color:var(--navy);display:block;margin-bottom:5px;">Nivel de urgencia <span style="color:#C0392B;">*</span></label>
+          <select id="fUrgencia" style="width:100%;border:1.5px solid #D8DCE3;border-radius:8px;padding:9px 12px;font-size:13px;font-family:inherit;">
+            <option value="Alta">Alta – requiere atención inmediata</option>
+            <option value="Media">Media</option>
+            <option value="Baja">Baja</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-size:12px;font-weight:800;color:var(--navy);display:block;margin-bottom:5px;">Tipo de vivienda</label>
+          <select id="fTipoVivienda" style="width:100%;border:1.5px solid #D8DCE3;border-radius:8px;padding:9px 12px;font-size:13px;font-family:inherit;">
+            <option value="">— Seleccionar —</option>
+            <option>Casa propia</option><option>Arriendo</option><option>Familiar</option><option>Otro</option>
+          </select>
+        </div>
+        <div style="grid-column:1/-1;">
+          <label style="font-size:12px;font-weight:800;color:var(--navy);display:block;margin-bottom:8px;">Categorías de necesidad <span style="color:#C0392B;">*</span></label>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <label style="display:flex;align-items:center;gap:8px;font-size:13px;"><input type="checkbox" class="chk-necesidad" value="Materiales de construcción" style="accent-color:var(--teal);"> Materiales de construcción</label>
+            <label style="display:flex;align-items:center;gap:8px;font-size:13px;"><input type="checkbox" class="chk-necesidad" value="Pintura y acabados" style="accent-color:var(--teal);"> Pintura y acabados</label>
+            <label style="display:flex;align-items:center;gap:8px;font-size:13px;"><input type="checkbox" class="chk-necesidad" value="Pisos y baldosas" style="accent-color:var(--teal);"> Pisos y baldosas</label>
+            <label style="display:flex;align-items:center;gap:8px;font-size:13px;"><input type="checkbox" class="chk-necesidad" value="Cubierta y tejas" style="accent-color:var(--teal);"> Cubierta y tejas</label>
+            <label style="display:flex;align-items:center;gap:8px;font-size:13px;"><input type="checkbox" class="chk-necesidad" value="Muebles y sala" style="accent-color:var(--teal);"> Muebles y sala</label>
+            <label style="display:flex;align-items:center;gap:8px;font-size:13px;"><input type="checkbox" class="chk-necesidad" value="Camas y dormitorio" style="accent-color:var(--teal);"> Camas y dormitorio</label>
+            <label style="display:flex;align-items:center;gap:8px;font-size:13px;"><input type="checkbox" class="chk-necesidad" value="Electrodomésticos" style="accent-color:var(--teal);"> Electrodomésticos</label>
+            <label style="display:flex;align-items:center;gap:8px;font-size:13px;"><input type="checkbox" class="chk-necesidad" value="Televisor" style="accent-color:var(--teal);"> Televisor</label>
+          </div>
+        </div>
+        <div style="grid-column:1/-1;">
+          <label style="font-size:12px;font-weight:800;color:var(--navy);display:block;margin-bottom:5px;">Descripción del estado del hogar <span style="color:#C0392B;">*</span></label>
+          <textarea id="fDescripcion" rows="3" placeholder="Describe el estado actual de la vivienda y las necesidades urgentes..." style="width:100%;border:1.5px solid #D8DCE3;border-radius:8px;padding:9px 12px;font-size:13px;font-family:inherit;resize:none;"></textarea>
+        </div>
+      </div>
+    </div>
+    <div style="padding:16px 24px;border-top:1px solid #F0F2F5;display:flex;gap:10px;">
+      <button onclick="cerrarFormOverlay()" style="flex:1;background:#fff;color:#4A5568;border:1.5px solid #D8DCE3;border-radius:8px;padding:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">Cancelar</button>
+      <button id="btnGuardarAdulto" onclick="guardarAdulto()" style="flex:2;background:var(--teal);color:#fff;border:none;border-radius:8px;padding:10px;font-size:13px;font-weight:800;cursor:pointer;font-family:inherit;box-shadow:0 3px 12px rgba(0,169,157,.3);">Guardar Beneficiario</button>
     </div>
   </div>
 </div>
@@ -651,43 +735,77 @@
 <div class="toast" id="toast"></div>
 
 <script>
-let rolActual = null; // Variable global para almacenar el rol
+  const API = "http://localhost:8000";
+  let adultos = [];       // array maestro — siempre viene del backend
+  let adultoActualId = null; // ID del adulto abierto en el modal de detalle
 
-document.addEventListener("DOMContentLoaded", async () => {
-  const token = localStorage.getItem("fs_token");
-  if (!token) { window.location.href = "login.html"; return; }
+  // ── UTILIDADES ─────────────────────────────────────────────────────────────
+  function getToken() { return localStorage.getItem("fs_token"); }
+  function getHeaders() { return { "Authorization": "Bearer " + getToken(), "Content-Type": "application/json" }; }
 
-  const headers = { "Authorization": "Bearer " + token };
-
-  try {
-    const res = await fetch("http://localhost:8000/adultos/", { headers });
-    if (res.status === 401) { window.location.href = "login.html"; return; }
-    const data = await res.json();
-    renderCards(data);
-  } catch (err) {
-    console.warn("Backend no disponible:", err.message);
-    // Datos de respaldo para que no quede vacío
-    renderCards([
-      { id:1, nombre:"María Inés Torres", identificacion:"25431987", edad:76, ciudad:"Bogotá", barrio:"Los Cedritos", urgencia:"Alta", estado:"Sin donación activa", necesidades:"Cubierta y tejas,Cemento y barillas,Pintura", descripcion:"Techo con filtraciones.", foto:null, acudiente:"Carlos Torres" },
-      { id:2, nombre:"Jorge Ernesto Ríos", identificacion:"13887204", edad:81, ciudad:"Bogotá", barrio:"Kennedy", urgencia:"Media", estado:"Sin donación activa", necesidades:"Cama y colchón,Muebles de sala,Televisor", descripcion:"Sin mobiliario básico.", foto:null, acudiente:"—" },
-      { id:3, nombre:"Lucía Amparo Castaño", identificacion:"41205339", edad:73, ciudad:"Bogotá", barrio:"Chapinero", urgencia:"Alta", estado:"Sin donación activa", necesidades:"Baldosas y pisos,Electrodomésticos,Pintura", descripcion:"Piso en tierra.", foto:null, acudiente:"Rosa Castaño" },
-      { id:4, nombre:"Pedro Manuel Vargas", identificacion:"7654321", edad:69, ciudad:"Medellín", barrio:"Belén", urgencia:"Media", estado:"Con donación en curso", necesidades:"Pintura y acabados", descripcion:"Paredes sin pintar.", foto:null, acudiente:"—" },
-      { id:5, nombre:"Rosa Elena Muñoz", identificacion:"31876543", edad:78, ciudad:"Cali", barrio:"El Jardín", urgencia:"Alta", estado:"Sin donación activa", necesidades:"Electrodomésticos,Cama y colchón,Cubierta y tejas", descripcion:"Techo deteriorado.", foto:null, acudiente:"Vecina" },
-      { id:6, nombre:"Hernando Gómez Salas", identificacion:"8123456", edad:84, ciudad:"Bucaramanga", barrio:"Cabecera", urgencia:"Baja", estado:"Sin donación activa", necesidades:"Muebles y sala,Televisor,Pisos y baldosas", descripcion:"Sin mobiliario en sala.", foto:null, acudiente:"Hermano" },
-    ]);
-  }
-});
-
-  // ── RENDER ────────────────────────────────────────────────────────────────
   function urgencyClass(u) {
     return u === "Alta" ? "urgency-high" : u === "Media" ? "urgency-med" : "urgency-low";
   }
 
+  function calcEdad(fechaNac) {
+    if (!fechaNac) return "—";
+    const hoy = new Date();
+    const nac = new Date(fechaNac);
+    return hoy.getFullYear() - nac.getFullYear();
+  }
+
+  function adaptarAdulto(a) {
+    // Normaliza el campo necesidades: puede llegar como string o array
+    let nec = a.necesidades || "";
+    if (typeof nec === "string") {
+      nec = nec.split(",").map(n => n.trim()).filter(Boolean);
+    }
+    return {
+      id:             a.id,
+      nombre:         a.nombre         || "—",
+      identificacion: a.identificacion || "—",
+      edad:           calcEdad(a.fecha_nac),
+      ciudad:         a.ciudad         || "—",
+      barrio:         a.barrio         || "—",
+      telefono:       a.telefono       || "—",
+      acudiente:      a.acudiente      || "—",
+      urgencia:       a.urgencia       || "Media",
+      estado:         a.activo === 1 ? "Sin donación activa" : "Inactivo",
+      necesidades:    nec,
+      descripcion:    a.descripcion    || "",
+      foto:           null,
+      fecha_nac:      a.fecha_nac      || "",
+      tipo_vivienda:  a.tipo_vivienda  || "",
+    };
+  }
+
+  // ── CARGAR DESDE BACKEND ───────────────────────────────────────────────────
+  async function cargarAdultos() {
+    const token = getToken();
+    if (!token) { window.location.href = "login.html"; return; }
+
+    try {
+      const res = await fetch(`${API}/adultos/`, { headers: getHeaders() });
+      if (res.status === 401) { window.location.href = "login.html"; return; }
+      if (!res.ok) throw new Error("Error al cargar beneficiarios");
+      const data = await res.json();
+      adultos = data.map(adaptarAdulto);
+      filtrar(); // renderiza con filtros actuales
+    } catch (err) {
+      console.warn("Backend no disponible:", err.message);
+      showToast("⚠️ No se pudo conectar al servidor");
+      renderCards([]);
+    }
+  }
+
+  // ── RENDER CARDS ───────────────────────────────────────────────────────────
   function renderCards(lista) {
     const grid = document.getElementById("cardsGrid");
     document.getElementById("countVisible").textContent = lista.length;
 
-    if (lista.length === 0) {
+    const rol = localStorage.getItem("fs_rol") || "admin";
+
+    if (!lista.length) {
       grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1">
         <div class="icon">🏠</div>
         <h3>No se encontraron beneficiarios</h3>
@@ -699,36 +817,29 @@ document.addEventListener("DOMContentLoaded", async () => {
     grid.innerHTML = lista.map(a => `
       <div class="card">
         <div class="card-img-wrap">
-          ${a.foto
-            ? `<img src="${a.foto}" alt="${a.nombre}" />`
-            : `<div class="card-img-placeholder">
-                <div class="avatar-big">${a.nombre.split(' ').map(n=>n[0]).slice(0,2).join('')}</div>
-                <span>Sin fotografía</span>
-               </div>`
-          }
+          <div class="card-img-placeholder">
+            <div class="avatar-big">${a.nombre.split(' ').map(n=>n[0]).slice(0,2).join('')}</div>
+            <span>Sin fotografía</span>
+          </div>
           <span class="urgency-badge ${urgencyClass(a.urgencia)}">
             ${a.urgencia === "Alta" ? "🔴" : a.urgencia === "Media" ? "🟡" : "🟢"} ${a.urgencia}
           </span>
-          <button class="like-btn" onclick="toggleLike(this)" title="Guardar">🤍</button>
         </div>
         <div class="card-body">
           <div class="card-name">${a.nombre}</div>
           <div class="card-info">
             <div class="card-info-row">Edad: <b>${a.edad} años</b></div>
-            <div class="card-info-row">Ciudad: <b>${a.ciudad}</b> – ${a.barrio}</div>
+            <div class="card-info-row">Ciudad: <b>${a.ciudad}</b>${a.barrio && a.barrio !== "—" ? ` – ${a.barrio}` : ""}</div>
             <div class="card-info-row">Estado: <b>${a.estado}</b></div>
           </div>
           <div class="card-tags">
-            ${(typeof a.necesidades === "string"
-              ? a.necesidades.split(",").map(n => n.trim()).filter(Boolean)
-              : a.necesidades || []
-            ).map((n,i) => `<span class="tag ${i===0 && a.urgencia==='Alta'?'urgent':''}">${n}</span>`).join('')}
+            ${a.necesidades.map((n,i) => `<span class="tag ${i===0 && a.urgencia==='Alta'?'urgent':''}">${n}</span>`).join('')}
           </div>
           <div class="card-actions">
-            ${rolActual === "empresa" 
-              ? `<button class="btn-donar" style="flex:1" onclick="donarA(${a.id})">Donar a ${a.nombre.split(' ')[0]}</button>`
-              : `<button class="btn-info" onclick="abrirModal(${a.id})">Más información</button>
-                 <button class="btn-donar" onclick="donarA(${a.id})">Donar materiales</button>`
+            <button class="btn-info" onclick="abrirModal(${a.id})">Más información</button>
+            ${rol === "admin"
+              ? `<button class="btn-donar" style="background:#C0392B;" onclick="confirmarEliminar(${a.id})">🗑️ Eliminar</button>`
+              : `<button class="btn-donar" onclick="irADonar(${a.id})">Donar materiales</button>`
             }
           </div>
         </div>
@@ -736,23 +847,85 @@ document.addEventListener("DOMContentLoaded", async () => {
     `).join('');
   }
 
-  // ── FILTROS ───────────────────────────────────────────────────────────────
+  // ── FILTROS ────────────────────────────────────────────────────────────────
   function filtrar() {
-    const q = document.getElementById("searchInput").value.toLowerCase();
-    const resultado = adultos.filter(a => {
-      const matchSearch = !q ||
+    const q = (document.getElementById("searchInput").value || "").toLowerCase();
+
+    // Urgencias seleccionadas
+    const urgencias = [...document.querySelectorAll('.sidebar input[type=checkbox]')]
+      .filter(c => c.closest('.filter-group') && c.closest('.filter-group').querySelector('.filter-toggle')?.textContent.includes('Urgencia'))
+      .filter(c => c.checked)
+      .map(c => c.nextElementSibling?.textContent.trim());
+
+    // Categorías de material seleccionadas
+    const categorias = [...document.querySelectorAll('.sidebar input[type=checkbox]')]
+      .filter(c => {
+        const grupo = c.closest('.filter-group');
+        return grupo && grupo.querySelector('.filter-toggle')?.textContent.includes('material');
+      })
+      .filter(c => c.checked)
+      .map(c => c.nextElementSibling?.textContent.trim().toLowerCase());
+
+    // Ciudad seleccionada
+    const ciudadSel = (document.querySelector('.filter-select')?.value || "").toLowerCase();
+
+    // Edad
+    const edadMin = parseInt(document.getElementById("edadMin")?.value) || 0;
+    const edadMax = parseInt(document.getElementById("edadMax")?.value) || 999;
+
+    // Orden
+    const orden = document.querySelector('.sort-select')?.value || "";
+
+    let resultado = adultos.filter(a => {
+      // Búsqueda de texto
+      const matchQ = !q ||
         a.nombre.toLowerCase().includes(q) ||
         a.ciudad.toLowerCase().includes(q) ||
         a.identificacion.includes(q);
-      return matchSearch;
+
+      // Urgencia — si no hay ninguna marcada, mostrar todos
+      const matchUrgencia = urgencias.length === 0 || urgencias.includes(a.urgencia);
+
+      // Categoría — si no hay ninguna marcada, mostrar todos
+      const matchCategoria = categorias.length === 0 ||
+        categorias.some(cat => a.necesidades.some(n => n.toLowerCase().includes(cat)));
+
+      // Ciudad
+      const matchCiudad = !ciudadSel || a.ciudad.toLowerCase().includes(ciudadSel);
+
+      // Edad
+      const edadNum = typeof a.edad === "number" ? a.edad : parseInt(a.edad) || 0;
+      const matchEdad = edadNum >= edadMin && edadNum <= edadMax;
+
+      return matchQ && matchUrgencia && matchCategoria && matchCiudad && matchEdad;
     });
+
+    // Ordenar
+    if (orden === "Nombre A-Z") {
+      resultado.sort((a,b) => a.nombre.localeCompare(b.nombre));
+    } else if (orden === "Mayor urgencia") {
+      const peso = { Alta: 0, Media: 1, Baja: 2 };
+      resultado.sort((a,b) => (peso[a.urgencia]||1) - (peso[b.urgencia]||1));
+    }
+
     renderCards(resultado);
   }
 
   function limpiarFiltros() {
     document.getElementById("searchInput").value = "";
-    document.querySelectorAll('.sidebar input[type=checkbox]').forEach(c => c.checked = true);
-    renderCards(adultos);
+    document.querySelectorAll('.sidebar input[type=checkbox]').forEach(c => {
+      // Urgencia: marcar todos; categorías: desmarcar
+      const grupo = c.closest('.filter-group');
+      const esUrgencia = grupo?.querySelector('.filter-toggle')?.textContent.includes('Urgencia');
+      c.checked = esUrgencia;
+    });
+    const sel = document.querySelector('.filter-select');
+    if (sel) sel.value = "";
+    const eMin = document.getElementById("edadMin");
+    const eMax = document.getElementById("edadMax");
+    if (eMin) eMin.value = 60;
+    if (eMax) eMax.value = 110;
+    filtrar();
     showToast('Filtros limpiados');
   }
 
@@ -762,32 +935,34 @@ document.addEventListener("DOMContentLoaded", async () => {
     body.classList.toggle("open");
   }
 
-  // ── DONAR ─────────────────────────────────────────────────────────────────
-  function donarA(adultoId) {
-    // Guarda el ID para preseleccionarlo en donaciones.html
-    localStorage.setItem("beneficiario_preseleccionado", adultoId);
-    window.location.href = "donaciones.html";
-  }
-
-  // ── MODAL ─────────────────────────────────────────────────────────────────
+  // ── MODAL DETALLE ──────────────────────────────────────────────────────────
   function abrirModal(id) {
     const a = adultos.find(x => x.id === id);
     if (!a) return;
+    adultoActualId = id;
+
+    const rol = localStorage.getItem("fs_rol") || "admin";
 
     document.getElementById("modalNombre").textContent = a.nombre;
     document.getElementById("modalId").textContent = `CC: ${a.identificacion} · ${a.edad} años · ${a.ciudad}`;
 
     document.getElementById("modalGrid").innerHTML = `
-      <div class="modal-field"><label>Ciudad</label><p>${a.ciudad} – ${a.barrio}</p></div>
+      <div class="modal-field"><label>Ciudad</label><p>${a.ciudad}${a.barrio !== "—" ? ` – ${a.barrio}` : ""}</p></div>
       <div class="modal-field"><label>Urgencia</label><p>${a.urgencia}</p></div>
       <div class="modal-field"><label>Estado</label><p>${a.estado}</p></div>
       <div class="modal-field"><label>Acudiente</label><p>${a.acudiente}</p></div>
+      <div class="modal-field"><label>Teléfono</label><p>${a.telefono}</p></div>
+      <div class="modal-field"><label>Tipo de vivienda</label><p>${a.tipo_vivienda || "—"}</p></div>
     `;
 
     document.getElementById("modalTags").innerHTML =
       a.necesidades.map(n => `<span class="tag">${n}</span>`).join('');
 
-    document.getElementById("modalDesc").textContent = a.descripcion;
+    document.getElementById("modalDesc").textContent = a.descripcion || "Sin descripción.";
+
+    // Mostrar botón eliminar solo a admins
+    const btnEliminar = document.getElementById("modalBtnEliminar");
+    if (btnEliminar) btnEliminar.style.display = rol === "admin" ? "inline-flex" : "none";
 
     document.getElementById("modalOverlay").classList.add("open");
     document.body.style.overflow = "hidden";
@@ -799,17 +974,132 @@ document.addEventListener("DOMContentLoaded", async () => {
   function cerrarModalBtn() {
     document.getElementById("modalOverlay").classList.remove("open");
     document.body.style.overflow = "";
-  }
-  document.addEventListener("keydown", e => { if (e.key === "Escape") cerrarModalBtn(); });
-
-  // ── LIKE ──────────────────────────────────────────────────────────────────
-  function toggleLike(btn) {
-    btn.classList.toggle("liked");
-    btn.textContent = btn.classList.contains("liked") ? "❤️" : "🤍";
-    if (btn.classList.contains("liked")) showToast("Guardado en tu lista ❤️");
+    adultoActualId = null;
   }
 
-  // ── TOAST ─────────────────────────────────────────────────────────────────
+  // ── ELIMINAR ───────────────────────────────────────────────────────────────
+  function eliminarDesdeModal() {
+    if (adultoActualId) confirmarEliminar(adultoActualId);
+  }
+
+  async function confirmarEliminar(id) {
+    const a = adultos.find(x => x.id === id);
+    if (!a) return;
+
+    if (!confirm(`¿Seguro que deseas eliminar a ${a.nombre}?\nEsta acción no se puede deshacer.`)) return;
+
+    try {
+      const res = await fetch(`${API}/adultos/${id}`, {
+        method: "DELETE",
+        headers: getHeaders()
+      });
+      if (!res.ok) throw new Error("Error al eliminar");
+      showToast(`✅ ${a.nombre} fue eliminado correctamente`);
+      cerrarModalBtn();
+      await cargarAdultos(); // recargar desde el backend
+    } catch (err) {
+      showToast("❌ Error al eliminar: " + err.message);
+    }
+  }
+
+  // ── FORMULARIO NUEVO / EDITAR ──────────────────────────────────────────────
+  function abrirFormularioNuevo() {
+    document.getElementById("formTitle").textContent = "Nuevo Beneficiario";
+    document.getElementById("btnGuardarAdulto").textContent = "Guardar Beneficiario";
+    // Limpiar campos
+    ["fNombre","fIdentificacion","fFechaNac","fDireccion","fCiudad",
+     "fBarrio","fTelefono","fAcudiente","fDescripcion"].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = "";
+    });
+    document.getElementById("fGenero").value = "";
+    document.getElementById("fUrgencia").value = "Alta";
+    document.getElementById("fTipoVivienda").value = "";
+    document.querySelectorAll('.chk-necesidad').forEach(c => c.checked = false);
+
+    document.getElementById("formOverlay").classList.add("open");
+    document.body.style.overflow = "hidden";
+  }
+
+  function cerrarFormOverlay(e) {
+    if (e && e.target !== document.getElementById("formOverlay")) return;
+    document.getElementById("formOverlay").classList.remove("open");
+    document.body.style.overflow = "";
+  }
+
+  async function guardarAdulto() {
+    const nombre         = document.getElementById("fNombre").value.trim();
+    const identificacion = document.getElementById("fIdentificacion").value.trim();
+    const ciudad         = document.getElementById("fCiudad").value.trim();
+    const descripcion    = document.getElementById("fDescripcion").value.trim();
+
+    // Validación básica
+    if (!nombre || !identificacion || !ciudad || !descripcion) {
+      showToast("⚠️ Completa los campos obligatorios (nombre, ID, ciudad y descripción)");
+      return;
+    }
+    const necesidades = [...document.querySelectorAll('.chk-necesidad:checked')]
+      .map(c => c.value).join(",");
+    if (!necesidades) {
+      showToast("⚠️ Selecciona al menos una categoría de necesidad");
+      return;
+    }
+
+    const datos = {
+      nombre,
+      identificacion,
+      fecha_nac:     document.getElementById("fFechaNac").value || null,
+      genero:        document.getElementById("fGenero").value || null,
+      direccion:     document.getElementById("fDireccion").value.trim() || null,
+      ciudad,
+      barrio:        document.getElementById("fBarrio").value.trim() || null,
+      telefono:      document.getElementById("fTelefono").value.trim() || null,
+      acudiente:     document.getElementById("fAcudiente").value.trim() || null,
+      urgencia:      document.getElementById("fUrgencia").value,
+      tipo_vivienda: document.getElementById("fTipoVivienda").value || null,
+      necesidades,
+      descripcion,
+    };
+
+    const btn = document.getElementById("btnGuardarAdulto");
+    btn.textContent = "Guardando…";
+    btn.disabled = true;
+
+    try {
+      const res = await fetch(`${API}/adultos/`, {
+        method: "POST",
+        headers: getHeaders(),
+        body: JSON.stringify(datos)
+      });
+
+      if (res.status === 400) {
+        const err = await res.json();
+        showToast("❌ " + (err.detail || "Error de validación"));
+        btn.textContent = "Guardar Beneficiario";
+        btn.disabled = false;
+        return;
+      }
+      if (!res.ok) throw new Error("Error al guardar");
+
+      showToast("✅ Beneficiario registrado exitosamente");
+      document.getElementById("formOverlay").classList.remove("open");
+      document.body.style.overflow = "";
+      await cargarAdultos(); // recargar desde el backend → consistencia total
+    } catch (err) {
+      showToast("❌ " + err.message);
+    } finally {
+      btn.textContent = "Guardar Beneficiario";
+      btn.disabled = false;
+    }
+  }
+
+  // ── DONAR ──────────────────────────────────────────────────────────────────
+  function irADonar(id) {
+    if (id) localStorage.setItem("beneficiario_preseleccionado", id);
+    window.location.href = "donaciones.html";
+  }
+
+  // ── TOAST ──────────────────────────────────────────────────────────────────
   let toastTimer;
   function showToast(msg) {
     const t = document.getElementById("toast");
@@ -819,52 +1109,49 @@ document.addEventListener("DOMContentLoaded", async () => {
     toastTimer = setTimeout(() => t.classList.remove("show"), 3200);
   }
 
-  // ── NAVBAR SEGÚN ROL ──────────────────────────────────────────────────────
-  function construirNavbar() {
-    const rol = localStorage.getItem("fs_rol");
-    const links = document.querySelector(".nav-links");
-
-    if (rol === "empresa") {
-      links.innerHTML = `
-        <a href="dashboard.html">Inicio</a>
-        <a href="adultos.html">Beneficiarios</a>
-        <a href="donaciones.html">Mis Donaciones</a>
-        <a href="certificado.html">Mis Certificados</a>
-      `;
-    } else {
-      links.innerHTML = `
-        <a href="dashboard.html">Inicio</a>
-        <a href="adultos.html">Beneficiarios</a>
-        <a href="donaciones.html">Donaciones</a>
-        <a href="empresas.html">Empresas</a>
-        <a href="reportes.html">Reportes</a>
-        <a href="certificado.html">Certificados</a>
-      `;
-    }
-
-    // Marcar el link activo según la página actual
-    const pagina = window.location.pathname.split("/").pop() || "adultos.html";
-    links.querySelectorAll("a").forEach(a => {
-      const href = a.getAttribute("href");
-      if (href === pagina || (pagina === "" && href === "adultos.html")) {
-        a.classList.add("active");
-      } else {
-        a.classList.remove("active");
-      }
-    });
-  }
-
-  // ── CERRAR SESIÓN ─────────────────────────────────────────────────────────
+  // ── CERRAR SESIÓN ──────────────────────────────────────────────────────────
   function cerrarSesion() {
     localStorage.clear();
     window.location.href = "login.html";
   }
 
-  // ── INIT ──────────────────────────────────────────────────────────────────
-  
-  construirNavbar();
-  renderCards(adultos);
+  // ── INIT ───────────────────────────────────────────────────────────────────
+  document.addEventListener("DOMContentLoaded", async () => {
+    const token = getToken();
+    if (!token) { window.location.href = "login.html"; return; }
+
+    // Nombre del usuario en navbar
+    const nombre = localStorage.getItem("fs_nombre") || "Admin";
+    const rol    = localStorage.getItem("fs_rol")    || "admin";
+    document.getElementById("userAvatar").textContent =
+      nombre.split(" ").slice(0,2).map(n=>n[0]).join("").toUpperCase();
+    document.getElementById("userName").textContent =
+      nombre.split(" ").slice(0,2).join(" ");
+
+    // Ocultar botón de nuevo beneficiario si es empresa
+    if (rol === "empresa") {
+      const wrap = document.getElementById("btnNuevoWrap");
+      if (wrap) wrap.style.display = "none";
+    }
+
+    // Cerrar form overlay al hacer clic fuera
+    document.getElementById("formOverlay").addEventListener("click", e => {
+      if (e.target === document.getElementById("formOverlay")) {
+        document.getElementById("formOverlay").classList.remove("open");
+        document.body.style.overflow = "";
+      }
+    });
+
+    document.addEventListener("keydown", e => {
+      if (e.key === "Escape") {
+        cerrarModalBtn();
+        document.getElementById("formOverlay").classList.remove("open");
+        document.body.style.overflow = "";
+      }
+    });
+
+    await cargarAdultos();
+  });
 </script>
-<script src="assets/js/api.js"></script>
 </body>
 </html>
