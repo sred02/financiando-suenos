@@ -1084,15 +1084,25 @@
       showToast("✅ Beneficiario registrado exitosamente");
       document.getElementById("formOverlay").classList.remove("open");
       document.body.style.overflow = "";
-      await cargarAdultos(); // recargar desde el backend → consistencia total
-    } catch (err) {
-      showToast("❌ " + err.message);
-    } finally {
+
+// Limpiar filtros para asegurarse de que el nuevo registro sea visible
+      document.getElementById("searchInput").value = "";
+      document.querySelectorAll('.sidebar input[type=checkbox]').forEach(c => {
+        const grupo = c.closest('.filter-group');
+        const esUrgencia = grupo?.querySelector('.filter-toggle')?.textContent.includes('Urgencia');
+        c.checked = esUrgencia; // urgencia marcada, categorías desmarcadas
+});
+        const sel = document.querySelector('.filter-select');
+        if (sel) sel.value = "";
+
+        await cargarAdultos(); // recarga desde backend y renderiza sin filtros activos
+  
+} catch (err) {
+      showToast("❌ Error al guardar: " + err.message);
       btn.textContent = "Guardar Beneficiario";
       btn.disabled = false;
     }
   }
-
   // ── DONAR ──────────────────────────────────────────────────────────────────
   function irADonar(id) {
     if (id) localStorage.setItem("beneficiario_preseleccionado", id);
